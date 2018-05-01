@@ -9,7 +9,7 @@ entity tb_bonfire_basic_soc is
 generic(
          RamFileName : string :="/home/thomas/development/bonfire/bonfire-basic-soc/compiled_code/BASIC_monitor.hex";
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
-         Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low byte first order to use data2mem
+         Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
          BurstSize : natural := 8;
          CacheSizeWords : natural := 512; -- 2KB Instruction Cache
@@ -18,7 +18,8 @@ generic(
          MUL_ARCH: string := "spartandsp";
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
-         DEVICE_FAMILY : string :=  ""
+         DEVICE_FAMILY : string :=  "";
+         UART_BAUDRATE : real := 500000.0
 
        );
 
@@ -73,6 +74,32 @@ architecture tb of tb_bonfire_basic_soc is
     signal TbClock : std_logic := '0';
     signal TbSimEnded : std_logic := '0';
 
+-- UART Capture Module
+    constant bit_time : time := ( 1_000_000.0 / UART_BAUDRATE ) * 1 us;
+    subtype t_uartnum is natural range 0 to 1;
+    type t_uart_kpi is array (t_uartnum) of natural;
+
+    signal total_count : t_uart_kpi;
+    signal framing_errors : t_uart_kpi;
+    signal uart0_stop : boolean;
+
+    COMPONENT tb_uart_capture_tx
+    GENERIC (
+      baudrate : natural;
+      bit_time : time;
+      SEND_LOG_NAME : string ;
+      stop_mark : std_logic_vector(7 downto 0) -- Stop marker byte
+     );
+    PORT(
+        txd : IN std_logic;
+        stop : OUT boolean;
+        framing_errors : OUT natural;
+        total_count : OUT natural
+        );
+    END COMPONENT;
+
+
+
 begin
 
     dut : bonfire_basic_soc
@@ -103,18 +130,38 @@ begin
               flash_spi_miso => flash_spi_miso,
               GPIO           => GPIO);
 
+
+   capture_tx_0 :  tb_uart_capture_tx
+   GENERIC MAP (
+       baudrate => natural(UART_BAUDRATE),
+       bit_time => bit_time,
+       SEND_LOG_NAME => "send0.log",
+       stop_mark => X"1A"
+   )
+   PORT MAP(
+        txd => uart0_txd,
+        stop => uart0_stop ,
+        framing_errors => framing_errors(0),
+        total_count =>total_count(0)
+    );
+
+    TbSimEnded <= '1' when uart0_stop else '0';
+
     -- Clock generation
     TbClock <= not TbClock after TbPeriod/2 when TbSimEnded /= '1' else '0';
 
     -- EDIT: Check that sysclk is really your main clock signal
     sysclk <= TbClock;
 
+    -- SPI Loopback
+
+    flash_spi_miso <= flash_spi_mosi;
+
     stimuli : process
     begin
         -- EDIT Adapt initialization as needed
-        uart0_rxd <= '0';
-        uart1_rxd <= '0';
-        flash_spi_miso <= '0';
+
+
 
         -- Reset generation
         -- EDIT: Check that I_RESET is really your reset signal
@@ -124,11 +171,11 @@ begin
         wait for 100 ns;
 
         -- EDIT Add stimuli here
-     
+
 
         -- Stop the clock and hence terminate the simulation
         --TbSimEnded <= '1';
-        wait;
+        wait until tbSimEnded = '1';
     end process;
 
 end tb;
