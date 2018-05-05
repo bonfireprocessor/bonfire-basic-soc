@@ -515,8 +515,8 @@ clkgen_inst: clkgen_arty
  );
 
 
-    process(clk) begin
-      if rising_edge(clk) then
+    process(sysclk) begin
+      if rising_edge(sysclk) then
          res1<= I_RESET;
          res2 <= res1;
       end if;

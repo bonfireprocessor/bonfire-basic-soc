@@ -6,14 +6,15 @@ backend = vivado
 simulators=xsim ghdl
 
 [fileset rtl]
-files = bonfire_basic_soc_top.vhd wbs_memory_interface.vhd
-        cpu_dbus_connect.vhd MainMemory.vhd dram_arbiter.vhd
+files = MainMemory.vhd wbs_memory_interface.vhd
+        cpu_dbus_connect.vhd  dram_arbiter.vhd
+        bonfire_basic_soc_top.vhd
 file_type=vhdlSource
 
-;[fileset sim]
-;files=bonfire_basic_soc_top_tb.vhd
-;file_type=vhdlSource
-;scope=sim
+[fileset sim]
+files=tb/tb_bonfire_basic_soc.vhd tb/clkgen_sim.vhd
+file_type=vhdlSource
+scope=sim
 
 
 [fileset xdc]
@@ -24,10 +25,11 @@ scope=synth
 [fileset vivado_ip]
 files=vivado/clkgen_arty.xci
 file_type=xci
+scope=synth
 
 
 [simulator]
-toplevel = bonfire_basic_soc_top_tb
+toplevel = tb_bonfire_basic_soc
 
 [vivado]
 part=xc7a35ticsg324-1L

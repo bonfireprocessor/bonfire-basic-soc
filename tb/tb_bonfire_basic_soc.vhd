@@ -5,9 +5,15 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+LIBRARY std;
+USE std.textio.all;
+
+use work.txt_util.all;
+
+
 entity tb_bonfire_basic_soc is
 generic(
-         RamFileName : string :="/home/thomas/development/bonfire/bonfire-basic-soc/compiled_code/BASIC_monitor.hex";
+         RamFileName : string :="compiled_code/sim_hello.hex";
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
@@ -19,7 +25,7 @@ generic(
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
          DEVICE_FAMILY : string :=  "";
-         UART_BAUDRATE : real := 500000.0
+         UART_BAUDRATE : real := 115200.0
 
        );
 
@@ -145,7 +151,13 @@ begin
         total_count =>total_count(0)
     );
 
-    TbSimEnded <= '1' when uart0_stop else '0';
+    process(total_count)
+    begin
+      report "Byte received over UART" severity note;
+
+    end process;
+
+
 
     -- Clock generation
     TbClock <= not TbClock after TbPeriod/2 when TbSimEnded /= '1' else '0';
@@ -175,7 +187,11 @@ begin
 
         -- Stop the clock and hence terminate the simulation
         --TbSimEnded <= '1';
-        wait until tbSimEnded = '1';
+        wait until uart0_stop;
+        print(OUTPUT,"UART0 Test captured bytes: " & str(total_count(0)) & " framing errors: " & str(framing_errors(0)));
+        I_RESET <= '1'; -- Will stop simulated Clock generator
+        TbSimEnded <= '1';
+        wait;
     end process;
 
 end tb;
