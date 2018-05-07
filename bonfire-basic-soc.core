@@ -5,6 +5,17 @@ depend = ::bonfire-cpu:0 ::bonfire-util:0 ::bonfire-soc-io ::bonfire-dcache
 backend = vivado
 simulators=xsim ghdl
 
+[fileset gpio_sim]
+files=tb/gpio_pad_sim.vhd
+file_type=vhdlSource
+usage=ghdl
+
+[fileset gpio_xilinx]
+files=gpio_pad.vhd
+file_type=vhdlSource
+usage=synth
+
+
 [fileset rtl]
 files = MainMemory.vhd wbs_memory_interface.vhd
         cpu_dbus_connect.vhd  dram_arbiter.vhd
@@ -14,19 +25,25 @@ file_type=vhdlSource
 [fileset sim]
 files=tb/tb_bonfire_basic_soc.vhd tb/clkgen_sim.vhd
 file_type=vhdlSource
-scope=sim
+usage=sim
+
 
 
 [fileset xdc]
 files = Arty.xdc
 file_type=xdc
-scope=synth
+usage=synth
 
 [fileset vivado_ip]
 files=vivado/clkgen_arty.xci
 file_type=xci
-scope=synth
+usage=synth
 
+[fileset code]
+files=compiled_code/sim_hello.hex
+usage=sim
+scope=private
+file_type=user
 
 [simulator]
 toplevel = tb_bonfire_basic_soc
@@ -34,3 +51,8 @@ toplevel = tb_bonfire_basic_soc
 [vivado]
 part=xc7a35ticsg324-1L
 top_module=bonfire_basic_soc_top
+
+
+[ghdl]
+analyze_options = --ieee=synopsys
+;run_options = --ieee=synopsys

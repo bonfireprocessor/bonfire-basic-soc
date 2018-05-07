@@ -4,7 +4,7 @@
 
 -- The Bonfire Processor Project, (c) 2016,2017 Thomas Hornschuh
 
--- Toplevel module for Papilio Pro with 8MB SDRAM
+--
 -- License: See LICENSE or LICENSE.txt File in git project root.
 --
 --
@@ -18,8 +18,8 @@ use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
-library UNISIM;
-use UNISIM.VComponents.all;
+--library UNISIM;
+--use UNISIM.VComponents.all;
 
 entity bonfire_basic_soc is
 generic (
@@ -208,13 +208,13 @@ begin
 
 
    gpio_pads: for i in GPIO'range generate
-     pad : IOBUF
+     pad : entity work.gpio_pad
 
      port map (
-        O => gpio_i(i),     -- Buffer output
-        IO => GPIO(i),   -- Buffer inout port (connect directly to top-level port)
-        I => gpio_o(i),     -- Buffer input
-        T => gpio_t(i)      -- 3-state enable input, high=input, low=output
+        O => gpio_i(i),   -- Buffer output
+        IO => GPIO(i),    -- Buffer inout port (connect directly to top-level port)
+        I => gpio_o(i),   -- Buffer input
+        T => gpio_t(i)    -- 3-state enable input, high=input, low=output
      );
 
    end generate;
@@ -504,10 +504,10 @@ PORT MAP(
 -- Clock
 
 clkgen_inst: clkgen_arty
-   port map ( 
-  -- Clock out ports  
+   port map (
+  -- Clock out ports
    clkout => clk,
-  -- Status and control signals                
+  -- Status and control signals
    reset => res2,
    locked => clk_locked,
    -- Clock in ports

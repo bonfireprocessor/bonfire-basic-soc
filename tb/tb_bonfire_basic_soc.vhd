@@ -13,7 +13,7 @@ use work.txt_util.all;
 
 entity tb_bonfire_basic_soc is
 generic(
-         RamFileName : string :="compiled_code/sim_hello.hex";
+         RamFileName : string :="../src/bonfire-basic-soc_0/compiled_code/sim_hello.hex";
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM

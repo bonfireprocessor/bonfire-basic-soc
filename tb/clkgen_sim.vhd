@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity clkgen_arty is
   generic (
-    CLK_PERIOD : time := 10.42ns -- 96 Mhz
+    CLK_PERIOD : time := 10.42 ns -- 96 Mhz
   );
   Port (
     clkout : out STD_LOGIC;
