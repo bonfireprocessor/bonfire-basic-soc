@@ -65,7 +65,7 @@ architecture tb of tb_bonfire_basic_soc is
     end component;
 
     signal sysclk         : std_logic;
-    signal I_RESET        : std_logic;
+    signal I_RESET        : std_logic :='0';
     signal uart0_txd      : std_logic;
     signal uart0_rxd      : std_logic :='1';
     signal uart1_txd      : std_logic;
@@ -177,11 +177,11 @@ begin
 
         -- Reset generation
         -- EDIT: Check that I_RESET is really your reset signal
+        wait for 50 ns;
         I_RESET <= '1';
-        wait for 100 ns;
+        wait for 50 ns;
         I_RESET <= '0';
-        wait for 100 ns;
-
+      
         -- EDIT Add stimuli here
 
 
@@ -189,7 +189,7 @@ begin
         --TbSimEnded <= '1';
         wait until uart0_stop;
         print(OUTPUT,"UART0 Test captured bytes: " & str(total_count(0)) & " framing errors: " & str(framing_errors(0)));
-        I_RESET <= '1'; -- Will stop simulated Clock generator
+      
         TbSimEnded <= '1';
         wait;
     end process;
