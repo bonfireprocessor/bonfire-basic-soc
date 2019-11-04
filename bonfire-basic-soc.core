@@ -55,4 +55,5 @@ top_module=bonfire_basic_soc_top
 
 [ghdl]
 analyze_options = --ieee=synopsys
+;run_options = --wave=soc.ghw 
 ;run_options = --ieee=synopsys

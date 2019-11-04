@@ -34,7 +34,8 @@ generic (
      MUL_ARCH: string := "spartandsp";
      REG_RAM_STYLE : string := "block";
      NUM_GPIO   : natural := 8;
-     DEVICE_FAMILY : string :=  ""
+     DEVICE_FAMILY : string :=  "";
+     BYPASS_CLKGEN : boolean := false -- When TRUE use sysclk input directly as CPU clock
 
    );
    port(
@@ -72,8 +73,7 @@ architecture Behavioral of bonfire_basic_soc is
  constant reset_adr : std_logic_vector(31 downto 0) :=X"0C000000";
 
 
-signal clk32Mhz,   -- buffered osc clock
-       clk,        -- logical CPU clock
+signal clk,        -- logical CPU clock
 
        uart_clk    : std_logic;
 
@@ -229,7 +229,8 @@ begin
        CACHE_LINE_SIZE_WORDS =>BurstSize,
        CACHE_SIZE_WORDS=>CacheSizeWords,
        BRAM_PORT_ADR_SIZE=>ram_adr_width,
-       ENABLE_TIMER=>true
+       ENABLE_TIMER=>true,
+      BRANCH_PREDICTOR=>true
      )
 
      PORT MAP(
@@ -503,16 +504,27 @@ PORT MAP(
 
 -- Clock
 
-clkgen_inst: clkgen_arty
-   port map (
-  -- Clock out ports
-   clkout => clk,
-  -- Status and control signals
-   reset => res2,
-   locked => clk_locked,
-   -- Clock in ports
-   sysclk => sysclk
- );
+g_clkgen: if not BYPASS_CLKGEN generate 
+  clkgen_inst: clkgen_arty
+    port map (
+    -- Clock out ports
+    clkout => clk,
+    -- Status and control signals
+    reset => res2,
+    locked => clk_locked,
+    -- Clock in ports
+    sysclk => sysclk
+  );
+end generate;
+
+g_bypass: if BYPASS_CLKGEN generate
+
+   --report "Clock generator bypassed" severity info; 
+
+   clk <= sysclk;
+   clk_locked <= '1';
+
+end generate;
 
 
     process(sysclk) begin

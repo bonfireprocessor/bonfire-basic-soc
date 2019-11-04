@@ -13,7 +13,8 @@ use work.txt_util.all;
 
 entity tb_bonfire_basic_soc is
 generic(
-         RamFileName : string :="../src/bonfire-basic-soc_0/compiled_code/sim_hello.hex";
+         RamFileName : string :="/home/thomas/development/bonfire/bonfire-software/test/sim_hello.hex";
+         --RamFileName : string :="../src/bonfire-basic-soc_0/compiled_code/sim_hello.hex"; 
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
@@ -25,8 +26,10 @@ generic(
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
          DEVICE_FAMILY : string :=  "";
-         UART_BAUDRATE : real := 115200.0
-
+         UART_BAUDRATE : real := 38400.0;
+         BYPASS_CLKGEN : boolean := true;
+         TB_PERIOD : time := 83.333 ns
+         --TB_PERIOD : time := 10 ns 
        );
 
 
@@ -47,8 +50,8 @@ architecture tb of tb_bonfire_basic_soc is
          MUL_ARCH: string := "spartandsp";
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
-         DEVICE_FAMILY : string :=  ""
-
+         DEVICE_FAMILY : string :=  "";
+         BYPASS_CLKGEN : boolean := false 
        );
 
         port (sysclk         : in std_logic;
@@ -76,7 +79,7 @@ architecture tb of tb_bonfire_basic_soc is
     signal flash_spi_miso : std_logic;
     signal GPIO           : std_logic_vector (num_gpio-1 downto 0);
 
-    constant TbPeriod : time := 10 ns;  -- 100 Mhz (for ARTY)
+    
     signal TbClock : std_logic := '0';
     signal TbSimEnded : std_logic := '0';
 
@@ -121,7 +124,8 @@ begin
          MUL_ARCH => MUL_ARCH,
          REG_RAM_STYLE => REG_RAM_STYLE,
          NUM_GPIO  => NUM_GPIO,
-         DEVICE_FAMILY => DEVICE_FAMILY
+         DEVICE_FAMILY => DEVICE_FAMILY,
+         BYPASS_CLKGEN => BYPASS_CLKGEN
 
     )
     port map (sysclk         => sysclk,
@@ -160,7 +164,7 @@ begin
 
 
     -- Clock generation
-    TbClock <= not TbClock after TbPeriod/2 when TbSimEnded /= '1' else '0';
+    TbClock <= not TbClock after TB_PERIOD/2 when TbSimEnded /= '1' else '0';
 
     -- EDIT: Check that sysclk is really your main clock signal
     sysclk <= TbClock;
