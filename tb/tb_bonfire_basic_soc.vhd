@@ -13,8 +13,8 @@ use work.txt_util.all;
 
 entity tb_bonfire_basic_soc is
 generic(
-         RamFileName : string :="/home/thomas/development/bonfire/bonfire-software/test/sim_hello.hex";
-         --RamFileName : string :="../src/bonfire-basic-soc_0/compiled_code/sim_hello.hex"; 
+         RamFileName : string :="//home/thomas/development/bonfire/bonfire-software/test/mult.hex";
+         --RamFileName : string :="../src/bonfire-basic-soc_0/compiled_code/sim_hello.hex";
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
@@ -29,7 +29,7 @@ generic(
          UART_BAUDRATE : real := 38400.0;
          BYPASS_CLKGEN : boolean := true;
          TB_PERIOD : time := 83.333 ns
-         --TB_PERIOD : time := 10 ns 
+         --TB_PERIOD : time := 10 ns
        );
 
 
@@ -37,7 +37,7 @@ end tb_bonfire_basic_soc;
 
 architecture tb of tb_bonfire_basic_soc is
 
-    component bonfire_basic_soc
+    component bonfire_basic_soc_top
     generic (
          RamFileName : string:="";    -- :="compiled_code/monitor.hex";
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
@@ -51,7 +51,7 @@ architecture tb of tb_bonfire_basic_soc is
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
          DEVICE_FAMILY : string :=  "";
-         BYPASS_CLKGEN : boolean := false 
+         BYPASS_CLKGEN : boolean := false
        );
 
         port (sysclk         : in std_logic;
@@ -79,7 +79,7 @@ architecture tb of tb_bonfire_basic_soc is
     signal flash_spi_miso : std_logic;
     signal GPIO           : std_logic_vector (num_gpio-1 downto 0);
 
-    
+
     signal TbClock : std_logic := '0';
     signal TbSimEnded : std_logic := '0';
 
@@ -111,7 +111,7 @@ architecture tb of tb_bonfire_basic_soc is
 
 begin
 
-    dut : bonfire_basic_soc
+    dut : bonfire_basic_soc_top
     generic map (
       RamFileName => RamFileName,
          mode => mode,
@@ -157,7 +157,7 @@ begin
 
     process(total_count)
     begin
-      report "Byte received over UART" severity note;
+      report "Byte received over UART"  severity note;
 
     end process;
 
@@ -185,7 +185,7 @@ begin
         I_RESET <= '1';
         wait for 50 ns;
         I_RESET <= '0';
-      
+
         -- EDIT Add stimuli here
 
 
@@ -193,11 +193,9 @@ begin
         --TbSimEnded <= '1';
         wait until uart0_stop;
         print(OUTPUT,"UART0 Test captured bytes: " & str(total_count(0)) & " framing errors: " & str(framing_errors(0)));
-      
+
         TbSimEnded <= '1';
         wait;
     end process;
 
 end tb;
-
-

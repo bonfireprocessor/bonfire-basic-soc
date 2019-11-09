@@ -39,7 +39,6 @@ entity MainMemory is
     generic (RamFileName : string := "meminit.ram";
              mode : string := "B";
              ADDR_WIDTH: integer;
-             SIZE : integer;
              Swapbytes : boolean; -- SWAP Bytes in RAM word in low byte first order to use data2mem
              EnableSecondPort : boolean := true -- enable inference of the second port
             );
@@ -64,6 +63,7 @@ architecture Behavioral of MainMemory is
 attribute keep_hierarchy : string;
 attribute keep_hierarchy of Behavioral: architecture is "TRUE";
 
+constant SIZE : natural := 2**ADDR_WIDTH;
 
 type tRam is array (0 to SIZE-1) of STD_LOGIC_VECTOR (31 downto 0);
 subtype tWord is std_logic_vector(31 downto 0);
@@ -98,8 +98,8 @@ begin
     file_open(RamFile,RamFileName,READ_MODE);
     is_open:=true;
   else
-    is_open:=false;  
-  end if;  
+    is_open:=false;
+  end if;
   for I in tRam'range loop
     if is_open and not endfile(RamFile) then
       readline (RamFile, RamFileLine);
@@ -119,7 +119,7 @@ begin
   end loop;
   if is_open then
     file_close(RamFile);
-  end if;  
+  end if;
   return r;
 end function;
 
@@ -205,4 +205,3 @@ begin
   end generate;
 
 end Behavioral;
-
