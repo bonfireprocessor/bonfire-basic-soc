@@ -25,6 +25,7 @@ entity bonfire_basic_soc_top is
 generic (
      RamFileName : string:="";    -- :="compiled_code/monitor.hex";
      mode : string := "H";       -- only used when UseBRAMPrimitives is false
+     LANED_RAM : boolean := false; -- Implement RAM in Byte Lanes
      Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low byte first order to use data2mem
      ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
      BurstSize : natural := 8;
@@ -249,27 +250,55 @@ begin
      gpio_t         => gpio_t
    );
 
-   ram: entity work.MainMemory
-        generic map (
-           ADDR_WIDTH =>ram_adr_width,
-           RamFileName => RamFileName,
-           mode => mode,
-           Swapbytes => Swapbytes,
-           EnableSecondPort => true
-        )
 
-      PORT MAP(
-         DBOut =>   bram_dba_i,
-         DBIn =>    bram_dba_o,
-         AdrBus =>  bram_adra_o,
-         ENA =>     bram_ena_o,
-         WREN =>    bram_wrena_o,
-         CLK =>     clk,
-         CLKB =>    clk,
-         ENB =>     bram_enb_o,
-         AdrBusB => bram_adrb_o,
-         DBOutB =>  bram_dbb_i
-      );
+  ram_nl:  if not LANED_RAM generate
+     ram: entity work.MainMemory
+          generic map (
+             ADDR_WIDTH =>ram_adr_width,
+             RamFileName => RamFileName,
+             mode => mode,
+             Swapbytes => Swapbytes,
+             EnableSecondPort => true
+          )
+
+        PORT MAP(
+           DBOut =>   bram_dba_i,
+           DBIn =>    bram_dba_o,
+           AdrBus =>  bram_adra_o,
+           ENA =>     bram_ena_o,
+           WREN =>    bram_wrena_o,
+           CLK =>     clk,
+           CLKB =>    clk,
+           ENB =>     bram_enb_o,
+           AdrBusB => bram_adrb_o,
+           DBOutB =>  bram_dbb_i
+        );
+  end generate;
+
+  ram_l:  if LANED_RAM generate
+     ram: entity work.main_memory_laned
+          generic map (
+             ADDR_WIDTH =>ram_adr_width,
+             RamFileName => RamFileName,
+             mode => mode,
+             EnableSecondPort => true
+          )
+
+        PORT MAP(
+           DBOut =>   bram_dba_i,
+           DBIn =>    bram_dba_o,
+           AdrBus =>  bram_adra_o,
+           ENA =>     bram_ena_o,
+           WREN =>    bram_wrena_o,
+           CLK =>     clk,
+           CLKB =>    clk,
+           ENB =>     bram_enb_o,
+           AdrBusB => bram_adrb_o,
+           DBOutB =>  bram_dbb_i
+        );
+  end generate;
+
+
 
 -- Clock
 

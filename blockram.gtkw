@@ -1,0 +1,38 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Wed Nov 13 19:28:47 2019
+[*]
+[dumpfile] "/home/thomas/development/fusesoc_build/bonfire-basic-soc_0/sim-ghdl/soc.ghw"
+[dumpfile_mtime] "Tue Nov 12 20:19:42 2019"
+[dumpfile_size] 215019637
+[savefile] "/home/thomas/development/bonfire/bonfire-basic-soc/blockram.gtkw"
+[timestart] 108922000000
+[size] 1920 1031
+[pos] -147 -377
+*-28.017776 109589000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.tb_bonfire_basic_soc.
+[treeopen] top.tb_bonfire_basic_soc.dut.
+[treeopen] top.tb_bonfire_basic_soc.dut.ram_l.
+[treeopen] top.tb_bonfire_basic_soc.dut.ram_l.ram.
+[sst_width] 225
+[signals_width] 216
+[sst_expanded] 1
+[sst_vpaned_height] 290
+@28
+top.tb_bonfire_basic_soc.dut.ram_l.ram.clk
+top.tb_bonfire_basic_soc.dut.ram_l.ram.ena
+@22
+#{top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[12:0]} top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[12] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[11] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[10] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[9] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[8] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[7] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[6] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[5] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[4] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[3] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[2] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[1] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbus[0]
+@29
+#{top.tb_bonfire_basic_soc.dut.ram_l.ram.wren[3:0]} top.tb_bonfire_basic_soc.dut.ram_l.ram.wren[3] top.tb_bonfire_basic_soc.dut.ram_l.ram.wren[2] top.tb_bonfire_basic_soc.dut.ram_l.ram.wren[1] top.tb_bonfire_basic_soc.dut.ram_l.ram.wren[0]
+@22
+#{top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[31:0]} top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[31] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[30] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[29] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[28] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[27] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[26] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[25] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[24] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[23] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[22] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[21] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[20] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[19] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[18] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[17] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[16] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[15] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[14] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[13] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[12] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[11] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[10] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[9] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[8] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[7] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[6] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[5] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[4] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[3] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[2] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[1] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbin[0]
+#{top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[31:0]} top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[31] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[30] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[29] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[28] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[27] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[26] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[25] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[24] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[23] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[22] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[21] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[20] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[19] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[18] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[17] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[16] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[15] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[14] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[13] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[12] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[11] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[10] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[9] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[8] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[7] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[6] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[5] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[4] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[3] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[2] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[1] top.tb_bonfire_basic_soc.dut.ram_l.ram.dbout[0]
+@28
+top.tb_bonfire_basic_soc.dut.ram_l.ram.enb
+@22
+#{top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[12:0]} top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[12] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[11] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[10] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[9] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[8] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[7] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[6] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[5] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[4] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[3] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[2] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[1] top.tb_bonfire_basic_soc.dut.ram_l.ram.adrbusb[0]
+#{top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[31:0]} top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[31] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[30] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[29] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[28] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[27] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[26] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[25] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[24] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[23] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[22] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[21] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[20] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[19] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[18] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[17] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[16] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[15] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[14] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[13] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[12] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[11] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[10] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[9] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[8] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[7] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[6] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[5] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[4] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[3] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[2] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[1] top.tb_bonfire_basic_soc.dut.ram_l.ram.dboutb[0]
+[pattern_trace] 1
+[pattern_trace] 0

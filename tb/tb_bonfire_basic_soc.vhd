@@ -13,9 +13,11 @@ use work.txt_util.all;
 
 entity tb_bonfire_basic_soc is
 generic(
-         RamFileName : string :="//home/thomas/development/bonfire/bonfire-software/test/mult.hex";
+         --RamFileName : string :="/home/thomas/development/bonfire/bonfire-software/test/mult.hex";
+         RamFileName : string :="/home/thomas/development/bonfire/bonfire-software/monitor/BASIC_12_monitor.hex";
          --RamFileName : string :="../src/bonfire-basic-soc_0/compiled_code/sim_hello.hex";
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
+         LANED_RAM : boolean := true; -- Implement RAM in Byte Lanes
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
          BurstSize : natural := 8;
@@ -39,12 +41,13 @@ architecture tb of tb_bonfire_basic_soc is
 
     component bonfire_basic_soc_top
     generic (
-         RamFileName : string:="";    -- :="compiled_code/monitor.hex";
-         mode : string := "H";       -- only used when UseBRAMPrimitives is false
-         Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low byte first order to use data2mem
-         ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
+         RamFileName : string:="";
+         mode : string := "H";
+         LANED_RAM : boolean := true;
+         Swapbytes : boolean := true;
+         ExtRAM : boolean := false;
          BurstSize : natural := 8;
-         CacheSizeWords : natural := 512; -- 2KB Instruction Cache
+         CacheSizeWords : natural := 512;
          EnableDCache : boolean := false;
          DCacheSizeWords : natural := 512;
          MUL_ARCH: string := "spartandsp";
@@ -116,6 +119,7 @@ begin
       RamFileName => RamFileName,
          mode => mode,
          Swapbytes => SwapBytes,
+         LANED_RAM => LANED_RAM,
          ExtRAM => ExtRAM,
          BurstSize => BurstSize,
          CacheSizeWords => CacheSizeWords,
