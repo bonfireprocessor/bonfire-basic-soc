@@ -25,14 +25,18 @@ entity bonfire_basic_soc_top is
 generic (
      RamFileName : string:="";    -- :="compiled_code/monitor.hex";
      mode : string := "H";       -- only used when UseBRAMPrimitives is false
+     BRAM_ADR_WIDTH : natural := 13;
      LANED_RAM : boolean := false; -- Implement RAM in Byte Lanes
      Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low byte first order to use data2mem
      ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
+     ENABLE_UART1    : boolean := true;
+     ENABLE_SPI      : boolean := true;
      BurstSize : natural := 8;
      CacheSizeWords : natural := 512; -- 2KB Instruction Cache
-     EnableDCache : boolean := false;
+     ENABLE_DCACHE : boolean := false;
      DCacheSizeWords : natural := 512;
-     MUL_ARCH: string := "spartandsp";
+     M_EXTENSION : boolean := true;
+     BRANCH_PREDICTOR : boolean := true;
      REG_RAM_STYLE : string := "block";
      NUM_GPIO   : natural := 8;
      DEVICE_FAMILY : string :=  "";
@@ -66,24 +70,14 @@ end bonfire_basic_soc_top;
 architecture Behavioral of bonfire_basic_soc_top is
 
 
-
- constant ram_adr_width : natural := 13;
- constant ram_size : natural := 8192;
-
-
- constant reset_adr : std_logic_vector(31 downto 0) :=X"0C000000";
+constant reset_adr : std_logic_vector(31 downto 0) :=X"0C000000";
+constant TOTAL_GPIO : natural := NUM_GPIO;
+constant ram_size : natural := 2**BRAM_ADR_WIDTH;
 
 
 signal clk : std_logic;       -- logical CPU clock
 signal reset,res1,res2  : std_logic;
 signal clk_locked : std_logic;
-
-
--- gpio ports
-
-
-constant TOTAL_GPIO : natural := NUM_GPIO;
-constant BRAM_ADR_WIDTH : natural := 13;
 
 
 signal irq_i : std_logic_vector(7 downto 0);
@@ -99,8 +93,9 @@ component bonfire_basic_soc is
     CacheSizeWords  : natural := 512;
     DCacheSizeWords : natural := 512;
     BRAM_ADR_BASE : std_logic_vector(7 downto 0) := X"0C";
-    MUL_ARCH        : string;
     REG_RAM_STYLE   : string;
+    M_EXTENSION  : boolean := true;
+    BRANCH_PREDICTOR : boolean := true;
     NUM_GPIO        : natural := 8;
     DEVICE_FAMILY   : string
   );
@@ -205,13 +200,14 @@ begin
    bonfire_basic_soc_i : bonfire_basic_soc
    generic map (
      ENABLE_EXT_RAM  => ExtRAM,
-     ENABLE_UART1    => true,
-     ENABLE_SPI      => true,
-     ENABLE_DCACHE   => EnableDCache,
+     ENABLE_UART1    => ENABLE_UART1,
+     ENABLE_SPI      => ENABLE_SPI,
+     ENABLE_DCACHE   => ENABLE_DCACHE,
      BurstSize       => BurstSize,
      CacheSizeWords  => CacheSizeWords,
      DCacheSizeWords => DCacheSizeWords,
-     MUL_ARCH        => MUL_ARCH,
+     M_EXTENSION     => M_EXTENSION,
+     BRANCH_PREDICTOR => BRANCH_PREDICTOR,
      REG_RAM_STYLE   => REG_RAM_STYLE,
      NUM_GPIO        => NUM_GPIO,
      DEVICE_FAMILY   => DEVICE_FAMILY
@@ -254,7 +250,7 @@ begin
   ram_nl:  if not LANED_RAM generate
      ram: entity work.MainMemory
           generic map (
-             ADDR_WIDTH =>ram_adr_width,
+             ADDR_WIDTH =>BRAM_ADR_WIDTH,
              RamFileName => RamFileName,
              mode => mode,
              Swapbytes => Swapbytes,
@@ -278,7 +274,7 @@ begin
   ram_l:  if LANED_RAM generate
      ram: entity work.main_memory_laned
           generic map (
-             ADDR_WIDTH =>ram_adr_width,
+             ADDR_WIDTH =>BRAM_ADR_WIDTH,
              RamFileName => RamFileName,
              mode => mode,
              EnableSecondPort => true
