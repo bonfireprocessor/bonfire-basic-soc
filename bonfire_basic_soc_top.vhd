@@ -31,6 +31,7 @@ generic (
      ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
      ENABLE_UART1    : boolean := true;
      ENABLE_SPI      : boolean := true;
+     USE_BONFIRE_CORE : boolean := true; -- New: Use bonfire-core instead of bonfire-cpu, experimental
      BurstSize : natural := 8;
      CacheSizeWords : natural := 512; -- 2KB Instruction Cache
      ENABLE_DCACHE : boolean := false;
@@ -134,6 +135,55 @@ component bonfire_basic_soc is
   );
 end component;
 
+component bonfire_core_basic_soc
+generic (
+  ENABLE_EXT_RAM  : boolean := false;
+  ENABLE_UART1    : boolean := false;
+  ENABLE_SPI      : boolean := false;
+  ENABLE_DCACHE   : boolean := false;
+  ENABLE_GPIO     : boolean := true;
+  UART_FIFO_DEPTH : natural := 6;
+  BRAM_ADR_WIDTH  : natural := 12;
+  NUM_GPIO        : natural := 8;
+  DCacheSizeWords : natural := 0;
+  DEVICE_FAMILY   : string
+);
+port (
+  clk_i          : in  std_logic;
+  reset_i        : in  std_logic;
+  bram_dba_i     : in  std_logic_vector(31 downto 0);
+  bram_dba_o     : out std_logic_vector(31 downto 0);
+  bram_adra_o    : out std_logic_vector(BRAM_ADR_WIDTH-1 downto 0);
+  bram_ena_o     : out STD_LOGIC;
+  bram_wrena_o   : out STD_LOGIC_VECTOR (3 downto 0);
+  bram_dbb_i     : in  std_logic_vector(31 downto 0);
+  bram_adrb_o    : out std_logic_vector(BRAM_ADR_WIDTH-1 downto 0);
+  bram_enb_o     : out STD_LOGIC;
+  wbm_cyc_o      : out std_logic;
+  wbm_stb_o      : out std_logic;
+  wbm_we_o       : out std_logic;
+  wbm_cti_o      : out std_logic_vector(2 downto 0);
+  wbm_bte_o      : out std_logic_vector(1 downto 0);
+  wbm_sel_o      : out std_logic_vector(3 downto 0);
+  wbm_ack_i      : in  std_logic;
+  wbm_adr_o      : out std_logic_vector(25 downto 2);
+  wbm_dat_i      : in  std_logic_vector(31 downto 0);
+  wbm_dat_o      : out std_logic_vector(31 downto 0);
+  uart0_txd      : out std_logic;
+  uart0_rxd      : in  std_logic;
+  uart1_txd      : out std_logic;
+  uart1_rxd      : in  std_logic;
+  flash_spi_cs   : out std_logic;
+  flash_spi_clk  : out std_logic;
+  flash_spi_mosi : out std_logic;
+  flash_spi_miso : in  std_logic;
+  gpio_o         : out std_logic_vector(NUM_GPIO-1 downto 0);
+  gpio_i         : in  std_logic_vector(NUM_GPIO-1 downto 0);
+  gpio_t         : out std_logic_vector(NUM_GPIO-1 downto 0)
+);
+end component bonfire_core_basic_soc;
+
+
 
 signal bram_dba_i     : std_logic_vector(31 downto 0);
 signal bram_dba_o     : std_logic_vector(31 downto 0);
@@ -196,13 +246,14 @@ begin
    end generate;
 
 
-
+use_bonfire_cpu: if not USE_BONFIRE_CORE generate
    bonfire_basic_soc_i : bonfire_basic_soc
    generic map (
      ENABLE_EXT_RAM  => ExtRAM,
      ENABLE_UART1    => ENABLE_UART1,
      ENABLE_SPI      => ENABLE_SPI,
      ENABLE_DCACHE   => ENABLE_DCACHE,
+     BRAM_ADR_WIDTH  => BRAM_ADR_WIDTH,
      BurstSize       => BurstSize,
      CacheSizeWords  => CacheSizeWords,
      DCacheSizeWords => DCacheSizeWords,
@@ -245,7 +296,54 @@ begin
      gpio_i         => gpio_i,
      gpio_t         => gpio_t
    );
+end generate;
 
+g_use_bonfire_core: if USE_BONFIRE_CORE generate
+   bonfire_basic_soc_i : bonfire_core_basic_soc
+   generic map (
+     ENABLE_EXT_RAM  => ExtRAM,
+     ENABLE_UART1    => ENABLE_UART1,
+     ENABLE_SPI      => ENABLE_SPI,
+     ENABLE_DCACHE   => ENABLE_DCACHE,
+     BRAM_ADR_WIDTH =>  BRAM_ADR_WIDTH,
+
+     NUM_GPIO        => NUM_GPIO,
+     DEVICE_FAMILY   => DEVICE_FAMILY
+   )
+   port map (
+     clk_i          => clk,
+     reset_i        => reset,
+     bram_dba_i     => bram_dba_i,
+     bram_dba_o     => bram_dba_o,
+     bram_adra_o    => bram_adra_o,
+     bram_ena_o     => bram_ena_o,
+     bram_wrena_o   => bram_wrena_o,
+     bram_dbb_i     => bram_dbb_i,
+     bram_adrb_o    => bram_adrb_o,
+     bram_enb_o     => bram_enb_o,
+     wbm_cyc_o      => wbm_cyc_o,
+     wbm_stb_o      => wbm_stb_o,
+     wbm_we_o       => wbm_we_o,
+     wbm_cti_o      => wbm_cti_o,
+     wbm_bte_o      => wbm_bte_o,
+     wbm_sel_o      => wbm_sel_o,
+     wbm_ack_i      => wbm_ack_i,
+     wbm_adr_o      => wbm_adr_o,
+     wbm_dat_i      => wbm_dat_i,
+     wbm_dat_o      => wbm_dat_o,
+     uart0_txd      => uart0_txd,
+     uart0_rxd      => uart0_rxd,
+     uart1_txd      => uart1_txd,
+     uart1_rxd      => uart1_rxd,
+     flash_spi_cs   => flash_spi_cs,
+     flash_spi_clk  => flash_spi_clk,
+     flash_spi_mosi => flash_spi_mosi,
+     flash_spi_miso => flash_spi_miso,
+     gpio_o         => gpio_o,
+     gpio_i         => gpio_i,
+     gpio_t         => gpio_t
+   );
+end generate;
 
   ram_nl:  if not LANED_RAM generate
      ram: entity work.MainMemory

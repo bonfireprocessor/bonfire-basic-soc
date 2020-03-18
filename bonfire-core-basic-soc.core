@@ -1,5 +1,5 @@
 CAPI=2:
-name: ::bonfire-basic-soc:0
+name: ::bonfire-core-basic-soc:0
 filesets:
   code:
     file_type: user
@@ -15,7 +15,7 @@ filesets:
     - gpio_pad.vhd
   rtl:
     depend:
-    - ::bonfire-cpu:0
+    - ::bonfire-core:0
     - ::bonfire-util:0
     - '>=::bonfire-soc-io:0'
     - '>=::bonfire-dcache:0'
@@ -26,7 +26,7 @@ filesets:
     - memory/main_memory_laned.vhd
     - cpu_dbus_connect.vhd
     - dram_arbiter.vhd
-    - bonfire_basic_soc.vhd
+    - bonfire_core_basic_soc.vhd
     - bonfire_basic_soc_top.vhd
   sim:
     file_type: vhdlSource
@@ -42,6 +42,24 @@ filesets:
     files:
     - Arty.xdc
 
+parameters:
+  BRAM_ADR_WIDTH:
+    datatype : str
+    default : '11'
+    description: "BRAM Adress width"
+    paramtype: generic
+  RamFileName:
+    datatype: file
+    default: compiled_code/sim_hello.hex
+    description: Initial boot RAM contents (in hex)
+    paramtype: generic
+  TB_PERIOD:
+    datatype: str
+    default: '10ns'
+    description: Clock period
+    paramtype: generic
+
+
 targets:
   default:
     filesets:
@@ -53,12 +71,12 @@ targets:
     - gpio_sim
     - rtl
     - sim
+    parameters: [ BRAM_ADR_WIDTH, RamFileName ]
     tools:
       ghdl:
         analyze_options:
         - --ieee=synopsys
-        run_options:
-        #- --wave=soc.ghw
+        run_options: [--wave=soc.ghw,  --stop-time=500ns ]
     toplevel: tb_bonfire_basic_soc
 
   synth:

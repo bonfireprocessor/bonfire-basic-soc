@@ -34,8 +34,8 @@ generic(
          DEVICE_FAMILY : string :=  "";
          UART_BAUDRATE : real := 38400.0;
          BYPASS_CLKGEN : boolean := true;
-         TB_PERIOD : time := 83.333 ns
-         --TB_PERIOD : time := 10 ns
+         --TB_PERIOD : time := 83.333 ns
+         TB_PERIOD : time := 10 ns
        );
 
 
@@ -197,9 +197,9 @@ begin
 
         -- Reset generation
         -- EDIT: Check that I_RESET is really your reset signal
-        wait for 50 ns;
+        wait for TB_PERIOD;
         I_RESET <= '1';
-        wait for 50 ns;
+        wait for TB_PERIOD * 3;
         I_RESET <= '0';
 
         -- EDIT Add stimuli here
