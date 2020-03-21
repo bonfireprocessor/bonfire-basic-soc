@@ -34,8 +34,8 @@ generic(
          DEVICE_FAMILY : string :=  "";
          UART_BAUDRATE : real := 38400.0;
          BYPASS_CLKGEN : boolean := true;
-         --TB_PERIOD : time := 83.333 ns
-         TB_PERIOD : time := 10 ns
+         TB_PERIOD : time := 83.333 ns
+         --TB_PERIOD : time := 10 ns
        );
 
 

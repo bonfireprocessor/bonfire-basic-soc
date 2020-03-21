@@ -47,17 +47,17 @@ parameters:
     datatype : str
     default : '11'
     description: "BRAM Adress width"
-    paramtype: generic
+    paramtype: vlogparam
   RamFileName:
     datatype: file
     default: compiled_code/sim_hello.hex
     description: Initial boot RAM contents (in hex)
-    paramtype: generic
+    paramtype: vlogparam
   TB_PERIOD:
     datatype: str
     default: '10ns'
     description: Clock period
-    paramtype: generic
+    paramtype: vlogparam
 
 
 targets:
@@ -74,9 +74,10 @@ targets:
     parameters: [ BRAM_ADR_WIDTH, RamFileName ]
     tools:
       ghdl:
-        analyze_options:
-        - --ieee=synopsys
-        run_options: [--wave=soc.ghw,  --stop-time=500ns ]
+        analyze_options: [--ieee=synopsys ]
+        run_options: [--wave=soc.ghw, --ieee-asserts=disable ] #,  --stop-time=500000ns ]
+      xsim:
+        xelab_options: [ "--debug typical" ]
     toplevel: tb_bonfire_basic_soc
 
   synth:
