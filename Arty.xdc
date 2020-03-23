@@ -32,10 +32,10 @@ create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_
 
 ##LEDs
 
-set_property -dict {PACKAGE_PIN H5 IOSTANDARD LVCMOS33} [get_ports {leds[0]}]
-set_property -dict {PACKAGE_PIN J5 IOSTANDARD LVCMOS33} [get_ports {leds[1]}]
-set_property -dict {PACKAGE_PIN T9 IOSTANDARD LVCMOS33} [get_ports {leds[2]}]
-set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports {leds[3]}]
+set_property -dict {PACKAGE_PIN H5 IOSTANDARD LVCMOS33} [get_ports {gpio[0]}]
+set_property -dict {PACKAGE_PIN J5 IOSTANDARD LVCMOS33} [get_ports {gpio[1]}]
+set_property -dict {PACKAGE_PIN T9 IOSTANDARD LVCMOS33} [get_ports {gpio[2]}]
+set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports {gpio[3]}]
 
 ##Buttons
 
@@ -209,10 +209,10 @@ set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports uart0_rxd]
 
 ##Quad SPI Flash
 
-set_property -dict {PACKAGE_PIN L13 IOSTANDARD LVCMOS33} [get_ports flash_spi_cs]
-set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports flash_spi_mosi]
-set_property -dict {PACKAGE_PIN K18 IOSTANDARD LVCMOS33} [get_ports flash_spi_miso]
-set_property -dict {PACKAGE_PIN L16 IOSTANDARD LVCMOS33} [get_ports flash_spi_clk]
+#set_property -dict {PACKAGE_PIN L13 IOSTANDARD LVCMOS33} [get_ports flash_spi_cs]
+#set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports flash_spi_mosi]
+#set_property -dict {PACKAGE_PIN K18 IOSTANDARD LVCMOS33} [get_ports flash_spi_miso]
+#set_property -dict {PACKAGE_PIN L16 IOSTANDARD LVCMOS33} [get_ports flash_spi_clk]
 #set_property -dict { PACKAGE_PIN L14   IOSTANDARD LVCMOS33 } [get_ports { qspi_dq[2] }]; #IO_L2P_T0_D02_14 Sch=qspi_dq[2]
 #set_property -dict { PACKAGE_PIN M14   IOSTANDARD LVCMOS33 } [get_ports { qspi_dq[3] }]; #IO_L2N_T0_D03_14 Sch=qspi_dq[3]
 

@@ -58,7 +58,10 @@ parameters:
     default: '10ns'
     description: Clock period
     paramtype: vlogparam
-
+  Swapbytes:
+    datatype: bool
+    default: false
+    paramtype: vlogparam
 
 targets:
   default:
@@ -82,6 +85,7 @@ targets:
 
   synth:
     default_tool: vivado
+    parameters: [ BRAM_ADR_WIDTH, RamFileName ]
     filesets:
     - gpio_xilinx
     - rtl
