@@ -6,7 +6,7 @@
 
 -- Description:
 
--- The Bonfire Processor Project, (c) 2016,2017 Thomas Hornschuh
+-- The Bonfire Processor Project, (c) 2016-2020 Thomas Hornschuh
 -- IO Buffer "wrapper" for Xilinx FPGAs
 --
 -- License: See LICENSE or LICENSE.txt File in git project root.
@@ -41,4 +41,3 @@ begin
      );
 
 end Behavioral;
-

@@ -17,26 +17,27 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 
-entity soc_arty_top is
+entity soc_fireant_top is
   generic (
-       RamFileName : string:="";    -- :="compiled_code/monitor.hex"
-       mode : string := "H";       -- only used when UseBRAMPrimitives is false
-       BRAM_ADR_WIDTH  : natural := 13;
-       Swapbytes : boolean := false -- SWAP Bytes in RAM word in low byte first order to use data2mem
-  );
-  port (
-  I_RESET   : in  std_logic;
-  CLK100MHZ  : in  std_logic;
+       RamFileName : string := "/home/thomas/development/bonfire/bonfire-software/test/hw_hello.hex";
+       BRANCH_PREDICTOR : boolean := true
+     );
+     port(
+          sysclk  : in  std_logic;
+          o_resetn : out std_logic;
+          i_locked : in std_logic;
+          resetn : in std_logic;
 
-  -- UART0 signals:
-  uart0_txd : out std_logic;
-  uart0_rxd : in  std_logic :='1';
-  gpio : inout std_logic_vector(3 downto 0)
-  );
+          -- UART0 signals:
+          uart0_txd : out std_logic;
+          uart0_rxd : in  std_logic :='1';
+
+          LED : out std_logic_vector(3 downto 0)
+    );
 
 end entity;
 
-architecture Behavioral of soc_arty_top is
+architecture Behavioral of soc_fireant_top is
 
 
 
@@ -79,32 +80,13 @@ architecture Behavioral of soc_arty_top is
     );
  end component bonfire_basic_soc_top;
 
- component clkgen_arty
- port (
-   clkout : out STD_LOGIC;
- --  resetn  : in  STD_LOGIC;
-   locked : out STD_LOGIC;
-   sysclk : in  STD_LOGIC
- );
- end component clkgen_arty;
 
- component gpio_pad
- port (
-   I  : in  STD_LOGIC;
-   O  : out STD_LOGIC;
-   T  : in  STD_LOGIC;
-   IO : inout STD_LOGIC
- );
- end component gpio_pad;
-
-signal sysclk : std_logic;
-
-signal reset,res1  : std_logic;
+signal reset,res1,res2  : std_logic;
 signal clk_locked : std_logic;
 
-signal gpio_o         : std_logic_vector(gpio'range);
-signal gpio_i         : std_logic_vector(gpio'range);
-signal gpio_t         : std_logic_vector(gpio'range);
+signal gpio_o         : std_logic_vector(LED'range);
+signal gpio_i         : std_logic_vector(LED'range);
+signal gpio_t         : std_logic_vector(LED'range);
 
 
 begin
@@ -112,10 +94,10 @@ begin
   bonfire_basic_soc_top_i :  bonfire_basic_soc_top
       generic map (
         RamFileName      => RamFileName,
-        mode             => mode,
-        BRAM_ADR_WIDTH   => BRAM_ADR_WIDTH,
-        -- LANED_RAM        => LANED_RAM,
-        Swapbytes        => Swapbytes,
+        mode             => "H",
+        BRAM_ADR_WIDTH   => 11,
+        LANED_RAM        => true,
+        Swapbytes        => false,
         -- ExtRAM           => ExtRAM,
         ENABLE_UART1     => false,
         ENABLE_SPI       => false,
@@ -127,7 +109,7 @@ begin
         -- M_EXTENSION      => M_EXTENSION,
         -- BRANCH_PREDICTOR => BRANCH_PREDICTOR,
         -- REG_RAM_STYLE    => REG_RAM_STYLE,
-        NUM_GPIO         => gpio'length
+        NUM_GPIO         => LED'length
 
       )
       port map (
@@ -147,30 +129,16 @@ begin
       );
 
 
-      gpio_pads: for i in gpio'range generate
-        pad : gpio_pad
+      o_resetn <= '1'; -- No Reset for PLL
 
-        port map (
-           O => gpio_i(i),   -- Buffer output
-           IO => gpio(i),    -- Buffer inout port
-           I => gpio_o(i),   -- Buffer input
-           T => gpio_t(i)    -- 3-state enable input, high=input, low=output
-        );
+      LED <= not gpio_o;
 
-      end generate;
-
-      clkgen_inst: clkgen_arty
-        port map (
-        -- Clock out ports
-        clkout => sysclk,
-        -- Status and control signals
-        --resetn => I_RESET,
-        locked => clk_locked,
-        -- Clock in ports
-        sysclk => CLK100MHZ
-      );
-
-      reset <= not clk_locked;
-
+      process(sysclk) begin
+         if rising_edge(sysclk) then
+            res1 <= not resetn or not i_locked;
+            res2 <= res1;
+            reset <= res2;
+         end if;
+      end process;
 
 end architecture;

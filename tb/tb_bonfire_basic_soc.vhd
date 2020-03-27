@@ -75,8 +75,21 @@ architecture tb of tb_bonfire_basic_soc is
               flash_spi_clk  : out std_logic;
               flash_spi_mosi : out std_logic;
               flash_spi_miso : in std_logic;
-              GPIO           : inout std_logic_vector (NUM_GPIO-1 downto 0));
+              gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
+              gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
+              gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0));
     end component;
+
+
+    component gpio_pad
+    port (
+      I  : in  STD_LOGIC;
+      O  : out STD_LOGIC;
+      T  : in  STD_LOGIC;
+      IO : inout STD_LOGIC
+    );
+    end component gpio_pad;
+
 
     signal sysclk         : std_logic;
     signal I_RESET        : std_logic :='0';
@@ -88,7 +101,13 @@ architecture tb of tb_bonfire_basic_soc is
     signal flash_spi_clk  : std_logic;
     signal flash_spi_mosi : std_logic;
     signal flash_spi_miso : std_logic;
-    signal GPIO           : std_logic_vector (num_gpio-1 downto 0);
+
+    signal gpio_io           : std_logic_vector (num_gpio-1 downto 0);
+
+    signal gpio_o         : std_logic_vector(NUM_GPIO-1 downto 0);
+    signal gpio_i         : std_logic_vector(NUM_GPIO-1 downto 0);
+    signal gpio_t         : std_logic_vector(NUM_GPIO-1 downto 0);
+
 
     constant ClockPeriod : time :=  ( 1000.0 / real(CLK_FREQ_MHZ) ) * 1 ns;
 
@@ -155,7 +174,23 @@ begin
               flash_spi_clk  => flash_spi_clk,
               flash_spi_mosi => flash_spi_mosi,
               flash_spi_miso => flash_spi_miso,
-              GPIO           => GPIO);
+              gpio_o => gpio_o,
+              gpio_i => gpio_i,
+              gpio_t => gpio_t);
+
+
+
+    gpio_pads: for i in gpio_io'range generate
+      pad : gpio_pad
+
+      port map (
+         O => gpio_i(i),   -- Buffer output
+         IO => gpio_io(i),    -- Buffer inout port
+         I => gpio_o(i),   -- Buffer input
+         T => gpio_t(i)    -- 3-state enable input, high=input, low=output
+      );
+
+    end generate;
 
 
    capture_tx_0 :  tb_uart_capture_tx
@@ -178,6 +213,12 @@ begin
 
     end process;
 
+    process
+    begin
+      wait on gpio_io;
+      print("IO Pads:" & str(gpio_io) & "(" & hstr(gpio_io) & ")");
+
+    end process;
 
 
     -- Clock generation

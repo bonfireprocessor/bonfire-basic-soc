@@ -47,24 +47,21 @@ generic (
    port(
         sysclk  : in  std_logic;
         I_RESET   : in  std_logic;
-
         -- UART0 signals:
         uart0_txd : out std_logic;
         uart0_rxd : in  std_logic :='1';
-
         -- UART1 signals:
         uart1_txd : out std_logic;
         uart1_rxd : in  std_logic :='1';
-
         -- SPI flash chip
         flash_spi_cs        : out   std_logic;
         flash_spi_clk       : out   std_logic;
         flash_spi_mosi      : out   std_logic;
         flash_spi_miso      : in    std_logic;
-
-
-        -- GPIO pads - assign with UCF/XDC File
-        GPIO   : inout STD_LOGIC_VECTOR(NUM_GPIO-1 downto 0)
+         -- GPIO
+         gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
+         gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
+         gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0)
     );
 end bonfire_basic_soc_top;
 
@@ -204,10 +201,6 @@ signal wbm_adr_o      : std_logic_vector(25 downto 2);
 signal wbm_dat_i      : std_logic_vector(31 downto 0);
 signal wbm_dat_o      : std_logic_vector(31 downto 0);
 
-signal gpio_o         : std_logic_vector(NUM_GPIO-1 downto 0);
-signal gpio_i         : std_logic_vector(NUM_GPIO-1 downto 0);
-signal gpio_t         : std_logic_vector(NUM_GPIO-1 downto 0);
-
 
 begin
 
@@ -221,18 +214,6 @@ begin
 
    -- Assignment of IOBs for GPIO
 
-
-   gpio_pads: for i in GPIO'range generate
-     pad : entity work.gpio_pad
-
-     port map (
-        O => gpio_i(i),   -- Buffer output
-        IO => GPIO(i),    -- Buffer inout port (connect directly to top-level port)
-        I => gpio_o(i),   -- Buffer input
-        T => gpio_t(i)    -- 3-state enable input, high=input, low=output
-     );
-
-   end generate;
 
 
 use_bonfire_cpu: if not USE_BONFIRE_CORE generate
