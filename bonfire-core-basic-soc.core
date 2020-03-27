@@ -44,7 +44,7 @@ filesets:
 
 parameters:
   BRAM_ADR_WIDTH:
-    datatype : str
+    datatype : int
     default : '11'
     description: "BRAM Adress width"
     paramtype: vlogparam
@@ -53,14 +53,18 @@ parameters:
     default: compiled_code/sim_hello.hex
     description: Initial boot RAM contents (in hex)
     paramtype: vlogparam
-  TB_PERIOD:
-    datatype: str
-    default: '10ns'
-    description: Clock period
+  CLK_FREQ_MHZ:
+    datatype: int
+    default:  12
+    description: Cock frequency in Mhz
     paramtype: vlogparam
   Swapbytes:
     datatype: bool
     default: false
+    paramtype: vlogparam
+  UART_BAUDRATE:
+    datatype: int
+    default:   38400
     paramtype: vlogparam
 
 targets:
@@ -74,7 +78,7 @@ targets:
     - gpio_sim
     - rtl
     - sim
-    parameters: [ BRAM_ADR_WIDTH, RamFileName ]
+    parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE ]
     tools:
       ghdl:
         analyze_options: [--ieee=synopsys ]
@@ -85,7 +89,7 @@ targets:
 
   synth:
     default_tool: vivado
-    parameters: [ BRAM_ADR_WIDTH, RamFileName ]
+    parameters: [ BRAM_ADR_WIDTH, RamFileName,Swapbytes ]
     filesets:
     - gpio_xilinx
     - rtl

@@ -77,11 +77,11 @@ constant ram_size : natural := 2**BRAM_ADR_WIDTH;
 
 
 signal clk : std_logic;       -- logical CPU clock
-signal reset,res1,res2  : std_logic;
-signal clk_locked : std_logic;
-
+signal reset : std_logic;
 
 signal irq_i : std_logic_vector(7 downto 0);
+
+
 
 component bonfire_basic_soc is
   generic (
@@ -209,23 +209,12 @@ signal gpio_i         : std_logic_vector(NUM_GPIO-1 downto 0);
 signal gpio_t         : std_logic_vector(NUM_GPIO-1 downto 0);
 
 
- component clkgen_arty
- port
- (-- Clock in ports
-  -- Clock out ports
-  clkout          : out    std_logic;
-  -- Status and control signals
-  reset             : in     std_logic;
-  locked            : out    std_logic;
-  sysclk           : in     std_logic
- );
-end component;
-
-signal  clkgen_rst: std_logic;
-
-
-
 begin
+
+  clk <= sysclk;
+  reset <= I_RESET;
+
+
    assert TOTAL_GPIO <= 32
      report "Total number of gpio ports cannot exceed 32"
      severity failure;
@@ -394,39 +383,5 @@ end generate;
 
 
 
--- Clock
-
-g_clkgen: if not BYPASS_CLKGEN generate
-  clkgen_inst: clkgen_arty
-    port map (
-    -- Clock out ports
-    clkout => clk,
-    -- Status and control signals
-    reset => res2,
-    locked => clk_locked,
-    -- Clock in ports
-    sysclk => sysclk
-  );
-end generate;
-
-g_bypass: if BYPASS_CLKGEN generate
-
-   --report "Clock generator bypassed" severity info;
-
-   clk <= sysclk;
-   clk_locked <= '1';
-
-end generate;
-
-
-    process(sysclk) begin
-      if rising_edge(sysclk) then
-         res1<= I_RESET;
-         res2 <= res1;
-      end if;
-
-    end process;
-
-    reset <= res2 or not clk_locked;
 
 end Behavioral;

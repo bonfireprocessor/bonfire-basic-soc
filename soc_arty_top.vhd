@@ -64,7 +64,7 @@ architecture Behavioral of soc_arty_top is
     );
     port (
       sysclk         : in  std_logic;
-      I_RESET        : in  std_logic;
+      I_RESET        : in  std_logic; -- active low
       uart0_txd      : out std_logic;
       uart0_rxd      : in  std_logic :='1';
       uart1_txd      : out std_logic;
@@ -77,10 +77,22 @@ architecture Behavioral of soc_arty_top is
     );
  end component bonfire_basic_soc_top;
 
+ component clkgen_arty
+ port (
+   clkout : out STD_LOGIC;
+ --  resetn  : in  STD_LOGIC;
+   locked : out STD_LOGIC;
+   sysclk : in  STD_LOGIC
+ );
+ end component clkgen_arty;
+
+signal sysclk : std_logic;
+
+signal reset,res1  : std_logic;
+signal clk_locked : std_logic;
+
 
 begin
-
-
 
   bonfire_basic_soc_top_i :  bonfire_basic_soc_top
       generic map (
@@ -104,8 +116,8 @@ begin
 
       )
       port map (
-        sysclk         => CLK100MHZ,
-        I_RESET        => I_RESET,
+        sysclk         => sysclk,
+        I_RESET        => reset, 
         uart0_txd      => uart0_txd,
         uart0_rxd      => uart0_rxd,
         uart1_txd      => open,
@@ -118,4 +130,18 @@ begin
       );
 
 
+      clkgen_inst: clkgen_arty
+        port map (
+        -- Clock out ports
+        clkout => sysclk,
+        -- Status and control signals
+        --resetn => I_RESET,
+        locked => clk_locked,
+        -- Clock in ports
+        sysclk => CLK100MHZ
+      );
+
+      reset <= not clk_locked;
+
+     
 end architecture;

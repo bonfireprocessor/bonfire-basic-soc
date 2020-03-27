@@ -32,10 +32,10 @@ generic(
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
          DEVICE_FAMILY : string :=  "";
-         UART_BAUDRATE : real := 38400.0;
+         UART_BAUDRATE : natural := 38400;
          BYPASS_CLKGEN : boolean := true;
-         TB_PERIOD : time := 83.333 ns
-         --TB_PERIOD : time := 10 ns
+         --TB_PERIOD : real := 83.333
+         CLK_FREQ_MHZ : natural := 12
        );
 
 
@@ -90,12 +90,13 @@ architecture tb of tb_bonfire_basic_soc is
     signal flash_spi_miso : std_logic;
     signal GPIO           : std_logic_vector (num_gpio-1 downto 0);
 
+    constant ClockPeriod : time :=  ( 1000.0 / real(CLK_FREQ_MHZ) ) * 1 ns;
 
     signal TbClock : std_logic := '0';
     signal TbSimEnded : std_logic := '0';
 
 -- UART Capture Module
-    constant bit_time : time := ( 1_000_000.0 / UART_BAUDRATE ) * 1 us;
+    constant bit_time : time := ( 1_000_000.0 / real(UART_BAUDRATE) ) * 1 us;
     subtype t_uartnum is natural range 0 to 1;
     type t_uart_kpi is array (t_uartnum) of natural;
 
@@ -180,7 +181,7 @@ begin
 
 
     -- Clock generation
-    TbClock <= not TbClock after TB_PERIOD/2 when TbSimEnded /= '1' else '0';
+    TbClock <= not TbClock after ClockPeriod / 2 when TbSimEnded /= '1' else '0';
 
     -- EDIT: Check that sysclk is really your main clock signal
     sysclk <= TbClock;
@@ -197,9 +198,9 @@ begin
 
         -- Reset generation
         -- EDIT: Check that I_RESET is really your reset signal
-        wait for TB_PERIOD;
+        wait for ClockPeriod;
         I_RESET <= '1';
-        wait for TB_PERIOD * 3;
+        wait for ClockPeriod * 3;
         I_RESET <= '0';
 
         -- EDIT Add stimuli here
