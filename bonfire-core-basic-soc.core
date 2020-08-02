@@ -1,6 +1,20 @@
 CAPI=2:
 name: ::bonfire-core-basic-soc:0
+
+
+generate:
+  core_top:
+    generator: gen_bonfire_core
+    parameters:
+      language: vhdl
+      bram_base: 0xc
+      bram_adr_width: 12
+
 filesets:
+  core_gen:
+    depend: 
+      - ::bonfire-core
+
   code:
     file_type: user
     files:
@@ -15,7 +29,6 @@ filesets:
     - gpio_pad.vhd
   rtl:
     depend:
-    - ::bonfire-core:0
     - ::bonfire-util:0
     - '>=::bonfire-soc-io:0'
     - '>=::bonfire-dcache:0'
@@ -45,44 +58,47 @@ filesets:
 parameters:
   BRAM_ADR_WIDTH:
     datatype : int
-    default : '11'
+    default : '12'
     description: "BRAM Adress width"
-    paramtype: vlogparam
+    paramtype: generic
   RamFileName:
     datatype: file
     default: compiled_code/sim_hello.hex
     description: Initial boot RAM contents (in hex)
-    paramtype: vlogparam
+    paramtype: generic
   CLK_FREQ_MHZ:
     datatype: int
     default:  12
     description: Cock frequency in Mhz
-    paramtype: vlogparam
+    paramtype: generic
   Swapbytes:
     datatype: bool
     default: false
-    paramtype: vlogparam
+    paramtype: generic
   UART_BAUDRATE:
     datatype: int
     default:   38400
-    paramtype: vlogparam
+    paramtype: generic
 
 targets:
   default:
     filesets:
     - rtl
+    - core_gen
   sim:
     default_tool: ghdl
+    generate: [ core_top ]
     filesets:
     - code
     - gpio_sim
     - rtl
+    - core_gen
     - sim
     parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE ]
     tools:
       ghdl:
-        analyze_options: [--ieee=synopsys ]
-        run_options: [--wave=soc.ghw, --ieee-asserts=disable ] #,  --stop-time=500000ns ]
+        analyze_options: [--ieee=synopsys, -frelaxed-rules ]
+        run_options: [ --ieee-asserts=disable, --max-stack-alloc=0 ] # --stop-time=5000ns, --wave=soc.ghw ]
       xsim:
         xelab_options: [ "--debug typical" ]
     toplevel: tb_bonfire_basic_soc

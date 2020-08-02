@@ -201,7 +201,7 @@ begin
 
 
 
-    bonfire_core_extended_top_i : entity work.bonfire_core_extended_top
+    bonfire_core_extended_top_i : entity work.bonfire_core_top
     port map (
       clock               => clk,
       reset               => reset_i,
