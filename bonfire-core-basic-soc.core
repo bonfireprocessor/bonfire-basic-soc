@@ -9,6 +9,7 @@ generate:
       language: vhdl
       bram_base: 0xc
       bram_adr_width: 12
+      conversion_warnings: 'ignore'
 
 filesets:
   core_gen:
@@ -19,19 +20,22 @@ filesets:
     file_type: user
     files:
     - compiled_code/sim_hello.hex
+
   gpio_sim:
     file_type: vhdlSource
     files:
     - tb/gpio_pad_sim.vhd
+
   gpio_xilinx:
     file_type: vhdlSource
     files:
     - gpio_pad.vhd
+
   rtl:
     depend:
     - ::bonfire-util:0
     - '>=::bonfire-soc-io:0'
-    - '>=::bonfire-dcache:0'
+    #- '>=::bonfire-dcache:0'
     file_type: vhdlSource
     files:
     - MainMemory.vhd
@@ -41,19 +45,32 @@ filesets:
     - dram_arbiter.vhd
     - bonfire_core_basic_soc.vhd
     - bonfire_basic_soc_top.vhd
+
   sim:
     file_type: vhdlSource
     files:
     - tb/tb_bonfire_basic_soc.vhd
     - tb/clkgen_sim.vhd
+
   vivado_ip:
     file_type: xci
     files:
     - vivado/clkgen_arty.xci
+
   xdc:
     file_type: xdc
     files:
     - Arty.xdc
+
+  arty_top:
+    file_type: vhdlSource
+    files: 
+    - soc_arty_top.vhd
+
+  ulx3s_top:
+    file_type: vhdlSource
+    files: 
+    - soc_ulx3s_top.vhd
 
 parameters:
   BRAM_ADR_WIDTH:
@@ -103,16 +120,32 @@ targets:
         xelab_options: [ "--debug typical" ]
     toplevel: tb_bonfire_basic_soc
 
-  synth:
+  synth-arty:
     default_tool: vivado
+    generate: [ core_top ]
     parameters: [ BRAM_ADR_WIDTH, RamFileName,Swapbytes ]
     filesets:
     - gpio_xilinx
     - rtl
     - xdc
     - vivado_ip
+    - core_gen
+    - arty_top
     tools:
       vivado:
         part: xc7a35ticsg324-1L
-    toplevel:
-    - bonfire_basic_soc_top
+    toplevel: soc_arty_top
+
+  synth-ulx3s:
+      default_tool: diamond
+      generate: [ core_top ]
+      parameters: [ RamFileName ]
+      filesets:
+      - rtl
+      - core_gen
+      - ulx3s_top
+      tools:
+        diamond:
+          part: LFE5U-85F-6BG381C
+      toplevel: soc_ulx3s_top
+
