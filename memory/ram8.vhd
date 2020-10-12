@@ -14,8 +14,6 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.std_logic_textio.all;
-
 use IEEE.NUMERIC_STD.ALL;
 
 library STD;
@@ -53,8 +51,6 @@ type tRam is array (0 to size-1) of std_logic_vector(7 downto 0);
 subtype tWord is std_logic_vector(31 downto 0);
 
 
-
-
 impure function InitFromFile(lane: natural)  return tRam is
 FILE RamFile : text; -- is in RamFileName;
 variable RamFileLine : line;
@@ -79,11 +75,7 @@ begin
         read(RamFileLine,word);  -- Binary read
       end if;
       r(I) := word( (lane+1)*8 -1 downto lane*8 ); -- Get selected byte lane
-      -- if SwapBytes then
-      --   r(I) :=  DoSwapBytes(word);
-      -- else
-      --   r(I) := word;
-      -- end if;
+    
     else
       r(I) := (others=>'0');
     end if;

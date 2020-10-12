@@ -128,6 +128,7 @@ architecture tb of tb_bonfire_basic_soc is
       baudrate : natural;
       bit_time : time;
       SEND_LOG_NAME : string ;
+      echo_output : boolean ;
       stop_mark : std_logic_vector(7 downto 0) -- Stop marker byte
      );
     PORT(
@@ -198,6 +199,7 @@ begin
        baudrate => natural(UART_BAUDRATE),
        bit_time => bit_time,
        SEND_LOG_NAME => "send0.log",
+       echo_output => True,
        stop_mark => X"1A"
    )
    PORT MAP(
@@ -207,11 +209,11 @@ begin
         total_count =>total_count(0)
     );
 
-    process(total_count)
-    begin
-      report "Byte received over UART"  severity note;
+    -- process(total_count)
+    -- begin
+    --   report "Byte received over UART"  severity note;
 
-    end process;
+    -- end process;
 
     process
     begin
@@ -250,7 +252,8 @@ begin
         -- Stop the clock and hence terminate the simulation
         --TbSimEnded <= '1';
         wait until uart0_stop;
-        print(OUTPUT,"UART0 Test captured bytes: " & str(total_count(0)) & " framing errors: " & str(framing_errors(0)));
+        print("");
+        print("UART0 Test captured bytes: " & str(total_count(0)) & " framing errors: " & str(framing_errors(0)));
 
         TbSimEnded <= '1';
         wait;

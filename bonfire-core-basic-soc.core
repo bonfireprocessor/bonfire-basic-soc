@@ -72,6 +72,11 @@ filesets:
     files: 
     - soc_ulx3s_top.vhd
 
+  lpf:
+    file_type: LPF
+    files:
+    - ulx3s/ulx3s_v20.lpf
+
 parameters:
   BRAM_ADR_WIDTH:
     datatype : int
@@ -79,7 +84,8 @@ parameters:
     description: "BRAM Adress width"
     paramtype: generic
   RamFileName:
-    datatype: file
+    #datatype: file
+    datatype: str
     default: compiled_code/sim_hello.hex
     description: Initial boot RAM contents (in hex)
     paramtype: generic
@@ -144,6 +150,7 @@ targets:
       - rtl
       - core_gen
       - ulx3s_top
+      - lpf
       tools:
         diamond:
           part: LFE5U-85F-6BG381C
