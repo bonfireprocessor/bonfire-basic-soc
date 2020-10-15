@@ -1,6 +1,16 @@
+
+----------------------------------------------------------------------------------
 -- Testbench automatically generated online
 -- at http://vhdl.lapinoo.net
 -- Generation date : 30.4.2018 16:33:09 GMT
+
+-- The Bonfire Processor Project, (c) 2016,2017 Thomas Hornschuh
+
+--
+-- License: See LICENSE or LICENSE.txt File in git project root.
+--
+--
+----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -13,9 +23,8 @@ use work.txt_util.all;
 
 entity tb_bonfire_basic_soc is
 generic(
-         --RamFileName : string :="/home/thomas/development/bonfire/bonfire-software/test/mult.hex";
+         USE_BONFIRE_CORE : boolean := true; -- Use bonfire-core instead of bonfire-cpu, experimental
          RamFileName : string :="/home/thomas/development/bonfire/bonfire-software/monitor/BASIC_12_monitor.hex";
-         --RamFileName : string :="../src/bonfire-basic-soc_0/compiled_code/sim_hello.hex";
          BRAM_ADR_WIDTH : natural := 13;
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
          LANED_RAM : boolean := true; -- Implement RAM in Byte Lanes
@@ -33,8 +42,6 @@ generic(
          NUM_GPIO   : natural := 8;
          DEVICE_FAMILY : string :=  "";
          UART_BAUDRATE : natural := 38400;
-         BYPASS_CLKGEN : boolean := true;
-         --TB_PERIOD : real := 83.333
          CLK_FREQ_MHZ : natural := 12
        );
 
@@ -45,6 +52,7 @@ architecture tb of tb_bonfire_basic_soc is
 
     component bonfire_basic_soc_top
     generic (
+         USE_BONFIRE_CORE : boolean := true;
          RamFileName : string:="";
          mode : string := "H";
          BRAM_ADR_WIDTH : natural := 13;
@@ -61,8 +69,8 @@ architecture tb of tb_bonfire_basic_soc is
          BRANCH_PREDICTOR : boolean := true;
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
-         DEVICE_FAMILY : string :=  "";
-         BYPASS_CLKGEN : boolean := false
+         DEVICE_FAMILY : string :=  ""
+        
        );
 
         port (sysclk         : in std_logic;
@@ -145,7 +153,8 @@ begin
 
     dut : bonfire_basic_soc_top
     generic map (
-      RamFileName => RamFileName,
+         USE_BONFIRE_CORE => USE_BONFIRE_CORE,
+         RamFileName => RamFileName,
          mode => mode,
          BRAM_ADR_WIDTH => BRAM_ADR_WIDTH,
          Swapbytes => SwapBytes,
@@ -161,9 +170,7 @@ begin
          BRANCH_PREDICTOR=>BRANCH_PREDICTOR,
          REG_RAM_STYLE => REG_RAM_STYLE,
          NUM_GPIO  => NUM_GPIO,
-         DEVICE_FAMILY => DEVICE_FAMILY,
-         BYPASS_CLKGEN => BYPASS_CLKGEN
-
+         DEVICE_FAMILY => DEVICE_FAMILY
     )
     port map (sysclk         => sysclk,
               I_RESET        => I_RESET,
@@ -235,22 +242,13 @@ begin
 
     stimuli : process
     begin
-        -- EDIT Adapt initialization as needed
-
-
-
-        -- Reset generation
-        -- EDIT: Check that I_RESET is really your reset signal
+      
         wait for ClockPeriod;
         I_RESET <= '1';
         wait for ClockPeriod * 3;
         I_RESET <= '0';
-
-        -- EDIT Add stimuli here
-
-
-        -- Stop the clock and hence terminate the simulation
-        --TbSimEnded <= '1';
+        print("Start simulation"); 
+    
         wait until uart0_stop;
         print("");
         print("UART0 Test captured bytes: " & str(total_count(0)) & " framing errors: " & str(framing_errors(0)));

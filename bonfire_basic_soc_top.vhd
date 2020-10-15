@@ -11,18 +11,12 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity bonfire_basic_soc_top is
 generic (
+     USE_BONFIRE_CORE : boolean := true; -- Use bonfire-core instead of bonfire-cpu, experimental
      RamFileName : string:="";    -- :="compiled_code/monitor.hex";
      mode : string := "H";       -- only used when UseBRAMPrimitives is false
      BRAM_ADR_WIDTH : natural := 13;
@@ -30,8 +24,7 @@ generic (
      Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low byte first order to use data2mem
      ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
      ENABLE_UART1    : boolean := true;
-     ENABLE_SPI      : boolean := true;
-     USE_BONFIRE_CORE : boolean := true; -- New: Use bonfire-core instead of bonfire-cpu, experimental
+     ENABLE_SPI      : boolean := true;   
      BurstSize : natural := 8;
      CacheSizeWords : natural := 512; -- 2KB Instruction Cache
      ENABLE_DCACHE : boolean := false;
@@ -40,9 +33,8 @@ generic (
      BRANCH_PREDICTOR : boolean := true;
      REG_RAM_STYLE : string := "block";
      NUM_GPIO   : natural := 8;
-     DEVICE_FAMILY : string :=  "";
-     BYPASS_CLKGEN : boolean := false -- When TRUE use sysclk input directly as CPU clock
-
+     DEVICE_FAMILY : string :=  ""
+   
    );
    port(
         sysclk  : in  std_logic;
@@ -217,6 +209,8 @@ begin
 
 
 use_bonfire_cpu: if not USE_BONFIRE_CORE generate
+   
+
    bonfire_basic_soc_i : bonfire_basic_soc
    generic map (
      ENABLE_EXT_RAM  => ExtRAM,
@@ -231,7 +225,8 @@ use_bonfire_cpu: if not USE_BONFIRE_CORE generate
      BRANCH_PREDICTOR => BRANCH_PREDICTOR,
      REG_RAM_STYLE   => REG_RAM_STYLE,
      NUM_GPIO        => NUM_GPIO,
-     DEVICE_FAMILY   => DEVICE_FAMILY
+     DEVICE_FAMILY   => DEVICE_FAMILY,
+     BRAM_ADR_BASE   =>  X"C0"
    )
    port map (
      clk_i          => clk,

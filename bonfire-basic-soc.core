@@ -5,21 +5,24 @@ filesets:
     file_type: user
     files:
     - compiled_code/sim_hello.hex
+
   gpio_sim:
     file_type: vhdlSource
     files:
     - tb/gpio_pad_sim.vhd
+
   gpio_xilinx:
     file_type: vhdlSource
     files:
     - gpio_pad.vhd
+
   rtl:
     depend:
     - ::bonfire-cpu:0
     - ::bonfire-util:0
     - '>=::bonfire-soc-io:0'
     - '>=::bonfire-dcache:0'
-    file_type: vhdlSource
+    file_type: vhdlSource-2008
     files:
     - MainMemory.vhd
     - memory/ram8.vhd
@@ -28,11 +31,13 @@ filesets:
     - dram_arbiter.vhd
     - bonfire_basic_soc.vhd
     - bonfire_basic_soc_top.vhd
+
   sim:
     file_type: vhdlSource
     files:
     - tb/tb_bonfire_basic_soc.vhd
     - tb/clkgen_sim.vhd
+
   vivado_ip:
     file_type: xci
     files:
@@ -41,6 +46,49 @@ filesets:
     file_type: xdc
     files:
     - Arty.xdc
+
+  ulx3s_top:
+    file_type: vhdlSource
+    files: 
+    - soc_ulx3s_top.vhd
+
+  lpf:
+    file_type: LPF
+    files:
+    - ulx3s/ulx3s_v20.lpf    
+
+
+parameters:
+    BRAM_ADR_WIDTH:
+      datatype : int
+      default : '12'
+      description: "BRAM Adress width"
+      paramtype: generic
+    RamFileName:
+      #datatype: file
+      datatype: str
+      default: compiled_code/sim_hello.hex
+      description: Initial boot RAM contents (in hex)
+      paramtype: generic
+    CLK_FREQ_MHZ:
+      datatype: int
+      default:  12
+      description: Cock frequency in Mhz
+      paramtype: generic
+    Swapbytes:
+      datatype: bool
+      default: false
+      paramtype: generic
+    UART_BAUDRATE:
+      datatype: int
+      default:   38400
+      paramtype: generic
+    USE_BONFIRE_CORE:
+      datatype: str
+      default: false
+      paramtype: generic
+      description: Need to stay false for this core !!!    
+
 
 targets:
   default:
@@ -53,12 +101,14 @@ targets:
     - gpio_sim
     - rtl
     - sim
+
+    parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE, USE_BONFIRE_CORE ]
     tools:
       ghdl:
-        analyze_options:
-        - --ieee=synopsys
-        run_options:
-        #- --wave=soc.ghw
+        analyze_options: [--ieee=synopsys, -frelaxed-rules ]
+        run_options: [ --ieee-asserts=disable, --max-stack-alloc=0 ] # --stop-time=5000ns, --wave=soc.ghw ]
+      xsim:
+        xelab_options: [ "--debug typical" ]
     toplevel: tb_bonfire_basic_soc
 
   synth:
@@ -73,3 +123,15 @@ targets:
         part: xc7a35ticsg324-1L
     toplevel:
     - bonfire_basic_soc_top
+
+  synth-ulx3s:
+    default_tool: diamond
+    parameters: [ RamFileName ]
+    filesets:
+    - rtl
+    - ulx3s_top
+    - lpf
+    tools:
+      diamond:
+        part: LFE5U-85F-6BG381C
+    toplevel: soc_ulx3s_top    

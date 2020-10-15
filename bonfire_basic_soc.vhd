@@ -11,15 +11,10 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.txt_util.all;
+
 
 entity bonfire_basic_soc is
 generic (
@@ -99,14 +94,9 @@ end bonfire_basic_soc;
 
 architecture Behavioral of bonfire_basic_soc is
 
-
-
  constant ram_adr_width : natural := BRAM_ADR_WIDTH;
  constant ram_size : natural := 2** ram_adr_width;
-
-
  constant reset_adr : std_logic_vector(31 downto 0) := BRAM_ADR_BASE & X"000000";
-
  constant generate_dcache : boolean := ENABLE_EXT_RAM and ENABLE_DCACHE;
 
 
@@ -175,9 +165,6 @@ signal io_adr : std_logic_vector(slave_adr_high downto 2);
 
 constant TOTAL_GPIO : natural := NUM_GPIO;
 
-
-
-
 signal irq_i : std_logic_vector(7 downto 0);
 
 
@@ -201,19 +188,22 @@ begin
      report "Total number of gpio ports cannot exceed 32"
      severity failure;
 
+    
+
    -- Assignment of IOBs for GPIO
 
 
     cpu_top: entity work.bonfire_cpu_top
      generic map (
        M_EXTENSION=>M_EXTENSION,
-       REG_RAM_STYLE => REG_RAM_STYLE,
-       START_ADDR => reset_adr(31 downto 2),
-       CACHE_LINE_SIZE_WORDS =>BurstSize,
-       CACHE_SIZE_WORDS=>CacheSizeWords,
-       BRAM_PORT_ADR_SIZE=>ram_adr_width,
-       ENABLE_TIMER=>true,
-       BRANCH_PREDICTOR=>BRANCH_PREDICTOR
+       REG_RAM_STYLE          => REG_RAM_STYLE,
+       START_ADDR             => reset_adr(31 downto 2),
+       CACHE_LINE_SIZE_WORDS  =>BurstSize,
+       CACHE_SIZE_WORDS       =>CacheSizeWords,
+       BRAM_PORT_ADR_SIZE     =>ram_adr_width,
+       BRAM_ADR_BASE          =>BRAM_ADR_BASE,
+       ENABLE_TIMER           =>true,
+       BRANCH_PREDICTOR       =>BRANCH_PREDICTOR
      )
 
      PORT MAP(
@@ -430,5 +420,17 @@ PORT MAP(
 
  clk <= clk_i;
  reset <= reset_i;
+
+--  diag: process(clk) begin
+
+--   if rising_edge(clk) then
+--      if bram_enb_o='1' then
+--         print("@" & time'image(now) & hstr(bram_adrb_o) & ":" & hstr(bram_dbb_i) );
+--      end if; 
+--   end if;  
+  
+  
+--  end process;  
+
 
 end Behavioral;
