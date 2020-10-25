@@ -20,7 +20,8 @@ use IEEE.NUMERIC_STD.ALL;
 entity soc_ulx3s_top is
   generic (
        RamFileName : string := "c:/Users/thoma/development/bonfire/bonfire-software/test/hw_hello.hex";
-       BRANCH_PREDICTOR : boolean := true
+       BRANCH_PREDICTOR : boolean := true;
+       USE_BONFIRE_CORE : boolean := true
      );
      port(
           sysclk  : in  std_logic;       
@@ -63,7 +64,7 @@ architecture Behavioral of soc_ulx3s_top is
     );
     port (
       sysclk         : in  std_logic;
-      I_RESET        : in  std_logic; -- active low
+      I_RESET        : in  std_logic;
       uart0_txd      : out std_logic;
       uart0_rxd      : in  std_logic :='1';
       uart1_txd      : out std_logic;
@@ -93,19 +94,19 @@ begin
       generic map (
         RamFileName      => RamFileName,
         mode             => "H",
-        BRAM_ADR_WIDTH   => 12,  -- TODO: Switch tis back to 11 for the FireAnt board
+        BRAM_ADR_WIDTH   => 12,  
         LANED_RAM        => true,
         Swapbytes        => false,
         -- ExtRAM           => ExtRAM,
         ENABLE_UART1     => false,
         ENABLE_SPI       => false,
-        USE_BONFIRE_CORE => true,
+        USE_BONFIRE_CORE => USE_BONFIRE_CORE,
         -- BurstSize        => BurstSize,
         -- CacheSizeWords   => CacheSizeWords,
         -- ENABLE_DCACHE    => ENABLE_DCACHE,
         -- DCacheSizeWords  => DCacheSizeWords,
         -- M_EXTENSION      => M_EXTENSION,
-        -- BRANCH_PREDICTOR => BRANCH_PREDICTOR,
+        BRANCH_PREDICTOR => BRANCH_PREDICTOR,
         -- REG_RAM_STYLE    => REG_RAM_STYLE,
         NUM_GPIO         => LED'length
 

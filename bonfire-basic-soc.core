@@ -83,6 +83,16 @@ parameters:
       datatype: int
       default:   38400
       paramtype: generic
+    M_EXTENSION:
+      datatype: str
+      default: true
+      paramtype: generic
+      description: Enable M Extension
+    BRANCH_PREDICTOR:  
+      datatype: str
+      default: true
+      paramtype: generic
+      description: Enable Branch Predictor
     USE_BONFIRE_CORE:
       datatype: str
       default: false
@@ -102,7 +112,7 @@ targets:
     - rtl
     - sim
 
-    parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE, USE_BONFIRE_CORE ]
+    parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE, USE_BONFIRE_CORE, M_EXTENSION, BRANCH_PREDICTOR  ]
     tools:
       ghdl:
         analyze_options: [--ieee=synopsys, -frelaxed-rules ]
@@ -126,7 +136,7 @@ targets:
 
   synth-ulx3s:
     default_tool: diamond
-    parameters: [ RamFileName ]
+    parameters: [ RamFileName, USE_BONFIRE_CORE ]
     filesets:
     - rtl
     - ulx3s_top

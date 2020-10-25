@@ -107,9 +107,9 @@ begin
   process(CLKB) begin
     if rising_edge(CLKB) then
        if ENB = '1' then
-         if WRENB='1' then
-           ram(to_integer(unsigned(AdrB))):=DInB;
-         end if;
+        --  if WRENB='1' then
+        --    ram(to_integer(unsigned(AdrB))):=DInB;
+        --  end if;
          DOutB <= ram(to_integer(unsigned(AdrB)));
        end if;
     end if;

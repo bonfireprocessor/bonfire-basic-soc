@@ -21,8 +21,8 @@ generic (
      mode : string := "H";       -- only used when UseBRAMPrimitives is false
      BRAM_ADR_WIDTH : natural := 13;
      LANED_RAM : boolean := false; -- Implement RAM in Byte Lanes
-     Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low byte first order to use data2mem
-     ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
+     Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low bRAMyte first order to use data2mem
+     ExtRAM : boolean := false; 
      ENABLE_UART1    : boolean := true;
      ENABLE_SPI      : boolean := true;   
      BurstSize : natural := 8;

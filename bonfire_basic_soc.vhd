@@ -99,6 +99,17 @@ architecture Behavioral of bonfire_basic_soc is
  constant reset_adr : std_logic_vector(31 downto 0) := BRAM_ADR_BASE & X"000000";
  constant generate_dcache : boolean := ENABLE_EXT_RAM and ENABLE_DCACHE;
 
+ function get_icache_size return natural is
+ begin
+    if ENABLE_EXT_RAM then
+       return CacheSizeWords;
+    else
+       report "no ICache" severity note;
+       return 0;   
+    end if;
+ end function; 
+
+
 
 signal clk : std_logic;        -- logical CPU clock
 signal reset : std_logic;
@@ -199,7 +210,7 @@ begin
        REG_RAM_STYLE          => REG_RAM_STYLE,
        START_ADDR             => reset_adr(31 downto 2),
        CACHE_LINE_SIZE_WORDS  =>BurstSize,
-       CACHE_SIZE_WORDS       =>CacheSizeWords,
+       CACHE_SIZE_WORDS       =>get_icache_size,
        BRAM_PORT_ADR_SIZE     =>ram_adr_width,
        BRAM_ADR_BASE          =>BRAM_ADR_BASE,
        ENABLE_TIMER           =>true,
