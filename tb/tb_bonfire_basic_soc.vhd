@@ -33,7 +33,7 @@ generic(
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
          BurstSize : natural := 8;
-         CacheSizeWords : natural := 0; -- 2KB Instruction Cache
+         CacheSizeWords : natural := 0; 
          ENABLE_DCACHE : boolean := false;
          DCacheSizeWords : natural := 512;
          M_EXTENSION : boolean :=true;

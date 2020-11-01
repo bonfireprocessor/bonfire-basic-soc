@@ -214,7 +214,8 @@ begin
        BRAM_PORT_ADR_SIZE     =>ram_adr_width,
        BRAM_ADR_BASE          =>BRAM_ADR_BASE,
        ENABLE_TIMER           =>true,
-       BRANCH_PREDICTOR       =>BRANCH_PREDICTOR
+       BRANCH_PREDICTOR       =>BRANCH_PREDICTOR,
+       DEVICE_FAMILY          =>DEVICE_FAMILY
      )
 
      PORT MAP(
@@ -314,7 +315,7 @@ dache: if generate_dcache generate
      LINE_SIZE => BurstSize,
      CACHE_SIZE => d_cache_size,
      ADDRESS_BITS => dcm_adr'length,
-     DEVICE_FAMILY => DEVICE_FAMILY-- hard coded work around...
+     DEVICE_FAMILY => DEVICE_FAMILY
    )
 
    PORT MAP(
@@ -387,6 +388,16 @@ extram:  if ENABLE_EXT_RAM generate
           m0_dat_o => wbm_dat_o,
           m0_dat_i => wbm_dat_i
       );
+end generate;
+
+no_extram: if not ENABLE_EXT_RAM generate
+
+  dcm_ack <= dcm_cyc and dcm_stb;
+  ibus_ack_i <= ibus_cyc_o and ibus_stb_o;
+  dcm_dat_rd <= (others =>'0');
+  ibus_dat_i <= (others =>'0');
+
+
 end generate;
 
 

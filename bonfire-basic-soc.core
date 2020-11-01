@@ -47,15 +47,22 @@ filesets:
     files:
     - Arty.xdc
 
-  ulx3s_top:
+  ulx3s_files:
     file_type: vhdlSource
     files: 
-    - soc_ulx3s_top.vhd
+    - ulx3s/soc_ulx3s_top.vhd
+    - ulx3s/clock_gen.vhd
+    - ulx3s/ecp_mult33.vhd
 
   lpf:
     file_type: LPF
     files:
-    - ulx3s/ulx3s_v20.lpf    
+    - ulx3s/ulx3s_v20.lpf  
+    
+  sbx:
+    file_type: SBX
+    files:
+    - ulx3s/diamond/ecp_mult33.sbx  
 
 
 parameters:
@@ -93,6 +100,11 @@ parameters:
       default: true
       paramtype: generic
       description: Enable Branch Predictor
+    DEVICE_FAMILY:
+      datatype: str
+      default: ""
+      paramtype: generic
+      description: "Enable device specific synthesis options, currently ECP5 and SPARTAN6 supported"  
     USE_BONFIRE_CORE:
       datatype: str
       default: false
@@ -112,11 +124,11 @@ targets:
     - rtl
     - sim
 
-    parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE, USE_BONFIRE_CORE, M_EXTENSION, BRANCH_PREDICTOR  ]
+    parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE, USE_BONFIRE_CORE, M_EXTENSION, BRANCH_PREDICTOR, DEVICE_FAMILY  ]
     tools:
       ghdl:
         analyze_options: [--ieee=synopsys, -frelaxed-rules ]
-        run_options: [ --ieee-asserts=disable, --max-stack-alloc=0 ] # --stop-time=5000ns, --wave=soc.ghw ]
+        run_options: [ --ieee-asserts=disable, --max-stack-alloc=0  --wave=soc.ghw, --stop-time=2000ns ] 
       xsim:
         xelab_options: [ "--debug typical" ]
     toplevel: tb_bonfire_basic_soc
@@ -136,11 +148,12 @@ targets:
 
   synth-ulx3s:
     default_tool: diamond
-    parameters: [ RamFileName, USE_BONFIRE_CORE ]
+    #parameters: [ RamFileName, USE_BONFIRE_CORE ]
     filesets:
+    - ulx3s_files  
     - rtl
-    - ulx3s_top
     - lpf
+    
     tools:
       diamond:
         part: LFE5U-85F-6BG381C
