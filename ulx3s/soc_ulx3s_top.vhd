@@ -21,7 +21,10 @@ entity soc_ulx3s_top is
   generic (
        RamFileName : string := "c:/Users/thoma/development/bonfire/bonfire-software/monitor/ULX3S_monitor.hex";
        BRANCH_PREDICTOR : boolean := true;
-       USE_BONFIRE_CORE : boolean := false
+       USE_BONFIRE_CORE : boolean := false;
+       BYPASS_CLOCKGEN  : boolean := false;
+       BurstSize : natural := 4;
+       sdram_column_bits : natural :=9
      );
      port(
           sysclk  : in  std_logic;       
@@ -38,6 +41,18 @@ entity soc_ulx3s_top is
           flash_miso : in  std_logic;
           flash_holdn :  out std_logic;
           flash_wpn : out std_logic;
+
+            -- SDRAM signals
+          sdram_clk      : out   STD_LOGIC;
+          sdram_cke      : out   STD_LOGIC;
+          sdram_csn      : out   STD_LOGIC;
+          sdram_rasn     : out   STD_LOGIC;
+          sdram_casn     : out   STD_LOGIC;
+          sdram_wen      : out   STD_LOGIC;
+          sdram_dqm      : out   STD_LOGIC_VECTOR( 1 downto 0);
+          sdram_a        : out   STD_LOGIC_VECTOR(12 downto 0);
+          sdram_ba       : out   STD_LOGIC_VECTOR( 1 downto 0);
+          sdram_d        : inout STD_LOGIC_VECTOR(15 downto 0);
 
           led : out std_logic_vector(7 downto 0)
     );
@@ -67,8 +82,7 @@ architecture Behavioral of soc_ulx3s_top is
       BRANCH_PREDICTOR : boolean := true;
       REG_RAM_STYLE    : string := "block";
       NUM_GPIO         : natural := 8;
-      DEVICE_FAMILY    : string := "ARTIX7";
-      BYPASS_CLKGEN    : boolean := false
+      DEVICE_FAMILY    : string := ""    
     );
     port (
       sysclk         : in  std_logic;
@@ -83,7 +97,17 @@ architecture Behavioral of soc_ulx3s_top is
       flash_spi_miso : in  std_logic;
       gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
       gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
-      gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0)
+      gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0);
+      wbm_cyc_o      : out std_logic;
+      wbm_stb_o      : out std_logic;
+      wbm_we_o       : out std_logic;
+      wbm_cti_o      : out std_logic_vector(2 downto 0);
+      wbm_bte_o      : out std_logic_vector(1 downto 0);
+      wbm_sel_o      : out std_logic_vector(3 downto 0);
+      wbm_ack_i      : in  std_logic;
+      wbm_adr_o      : out std_logic_vector(25 downto 2);
+      wbm_dat_i      : in  std_logic_vector(31 downto 0);
+      wbm_dat_o      : out std_logic_vector(31 downto 0)
     );
  end component bonfire_basic_soc_top;
  
@@ -112,6 +136,13 @@ signal gpio_o         : std_logic_vector(LED'range);
 signal gpio_i         : std_logic_vector(LED'range);
 signal gpio_t         : std_logic_vector(LED'range);
 
+-- Common bus to DRAM controller
+signal mem_cyc,mem_stb,mem_we,mem_ack : std_logic;
+signal mem_sel :  std_logic_vector(3 downto 0);
+signal mem_dat_rd,mem_dat_wr : std_logic_vector(31 downto 0);
+signal mem_adr : std_logic_vector(25 downto 2);
+signal mem_cti : std_logic_vector(2 downto 0);
+
 
 begin
 
@@ -119,7 +150,13 @@ begin
   flash_wpn <= '1';
   flash_csn <= flash_csn_local;
 
-  pll : clock_gen port map (CLKI=>sysclk, CLKOP=>clk);
+  cgen: case BYPASS_CLOCKGEN generate
+    when FALSE =>
+      pll : clock_gen port map (CLKI=>sysclk, CLKOP=>clk);
+    when TRUE =>
+      clk <= sysclk;
+      
+  end generate;    
   
   -- See Lattice TN1260 Figure 7: MCLK Connection 
   u1: USRMCLK port map (
@@ -135,11 +172,11 @@ begin
         BRAM_ADR_WIDTH   => 12,  
         LANED_RAM        => true,
         Swapbytes        => false,
-        -- ExtRAM           => ExtRAM,
+        ExtRAM           => true,
         ENABLE_UART1     => false,
         ENABLE_SPI       => true,
         USE_BONFIRE_CORE => false,
-        -- BurstSize        => BurstSize,
+        BurstSize        => BurstSize,
         -- CacheSizeWords   => CacheSizeWords,
         -- ENABLE_DCACHE    => ENABLE_DCACHE,
         -- DCacheSizeWords  => DCacheSizeWords,
@@ -160,15 +197,62 @@ begin
         flash_spi_clk  => flash_clk,
         flash_spi_mosi => flash_mosi,
         flash_spi_miso => flash_miso,
+
         gpio_o => gpio_o,
         gpio_i => gpio_i,
-        gpio_t => gpio_t
+        gpio_t => gpio_t,
+
+        wbm_cyc_o      => mem_cyc,
+        wbm_stb_o      => mem_stb,
+        wbm_we_o       => mem_we,
+        wbm_cti_o      => mem_cti,
+        wbm_bte_o      => open,
+        wbm_sel_o      => mem_sel,
+        wbm_ack_i      => mem_ack,
+        wbm_adr_o      => mem_adr,
+        wbm_dat_i      => mem_dat_rd,
+        wbm_dat_o      => mem_dat_wr
       );
 
 
     
       --LED(7) <= not resetn; -- to check polarity of reset button.
       LED(7 downto 0) <=  gpio_o(7 downto 0);
+
+
+      DRAM: entity work.wbs_sdram_interface
+      generic map (
+        wbs_adr_high => mem_adr'high,
+        wbs_burst_length => BurstSize,
+        sdram_column_bits => sdram_column_bits      
+      )
+      PORT MAP(
+            clk_i =>clk ,
+            rst_i => reset,
+
+            wbs_cyc_i =>  mem_cyc,
+            wbs_stb_i =>  mem_stb,
+            wbs_we_i =>   mem_we,
+            wbs_sel_i =>  mem_sel,
+            wbs_ack_o =>  mem_ack,
+            wbs_adr_i =>  mem_adr,
+            wbs_dat_i =>  mem_dat_wr,
+            wbs_dat_o =>  mem_dat_rd,
+            wbs_cti_i =>  mem_cti,
+      
+            SDRAM_CLK => sdram_clk,
+            SDRAM_CKE => sdram_cke,
+            SDRAM_CS => sdram_csn,
+            SDRAM_RAS => sdram_rasn,
+            SDRAM_CAS => sdram_casn,
+            SDRAM_WE => sdram_wen,
+            SDRAM_DQM => sdram_dqm,
+            SDRAM_ADDR => sdram_a,
+            SDRAM_BA => sdram_ba,
+            SDRAM_DATA => sdram_d
+          );
+
+
 
       process(clk) begin
          if rising_edge(clk) then

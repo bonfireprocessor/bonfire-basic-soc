@@ -48,21 +48,24 @@ filesets:
     - Arty.xdc
 
   ulx3s_files:
-    file_type: vhdlSource
+    file_type: vhdlSource-2008
     files: 
     - ulx3s/soc_ulx3s_top.vhd
     - ulx3s/clock_gen.vhd
     - ulx3s/ecp_mult33.vhd
+    - tb/gpio_pad_sim.vhd
+    - sdram/wbs_sdram_interface.vhd
+    - sdram/SDRAM_Controller.vhd
 
   lpf:
     file_type: LPF
     files:
     - ulx3s/ulx3s_v20.lpf  
     
-  sbx:
-    file_type: SBX
-    files:
-    - ulx3s/diamond/ecp_mult33.sbx  
+  # sbx:
+  #   file_type: SBX
+  #   files:
+  #   - ulx3s/diamond/ecp_mult33.sbx  
 
 
 parameters:

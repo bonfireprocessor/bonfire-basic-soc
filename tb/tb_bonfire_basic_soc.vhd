@@ -29,11 +29,11 @@ generic(
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
          LANED_RAM : boolean := true; -- Implement RAM in Byte Lanes
          ENABLE_UART1 : boolean := false;
-         ENABLE_SPI   : boolean := false;
+         ENABLE_SPI   : boolean := true;
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
          ExtRAM : boolean := false; -- "Simulate" External RAM as Bock RAM
          BurstSize : natural := 8;
-         CacheSizeWords : natural := 0; 
+         CacheSizeWords : natural := 0;
          ENABLE_DCACHE : boolean := false;
          DCacheSizeWords : natural := 512;
          M_EXTENSION : boolean :=true;
@@ -70,7 +70,7 @@ architecture tb of tb_bonfire_basic_soc is
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
          DEVICE_FAMILY : string :=  ""
-        
+
        );
 
         port (sysclk         : in std_logic;
@@ -85,7 +85,19 @@ architecture tb of tb_bonfire_basic_soc is
               flash_spi_miso : in std_logic;
               gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
               gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
-              gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0));
+              gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0);
+              wbm_cyc_o      : out std_logic;
+              wbm_stb_o      : out std_logic;
+              wbm_we_o       : out std_logic;
+              wbm_cti_o      : out std_logic_vector(2 downto 0);
+              wbm_bte_o      : out std_logic_vector(1 downto 0);
+              wbm_sel_o      : out std_logic_vector(3 downto 0);
+              wbm_ack_i      : in  std_logic;
+              wbm_adr_o      : out std_logic_vector(25 downto 2);
+              wbm_dat_i      : in  std_logic_vector(31 downto 0);
+              wbm_dat_o      : out std_logic_vector(31 downto 0)
+         );
+
     end component;
 
 
@@ -184,7 +196,19 @@ begin
               flash_spi_miso => flash_spi_miso,
               gpio_o => gpio_o,
               gpio_i => gpio_i,
-              gpio_t => gpio_t);
+              gpio_t => gpio_t,
+
+              wbm_cyc_o      => open,
+              wbm_stb_o      => open,
+              wbm_we_o       => open,
+              wbm_cti_o      => open,
+              wbm_bte_o      => open,
+              wbm_sel_o      => open,
+              wbm_ack_i      => '1',
+              wbm_adr_o      => open,
+              wbm_dat_i      => (others=>'X'),
+              wbm_dat_o      => open
+      );
 
 
 
@@ -242,13 +266,13 @@ begin
 
     stimuli : process
     begin
-      
+
         wait for ClockPeriod;
         I_RESET <= '1';
         wait for ClockPeriod * 3;
         I_RESET <= '0';
-        print("Start simulation"); 
-    
+        print("Start simulation");
+
         wait until uart0_stop;
         print("");
         print("UART0 Test captured bytes: " & str(total_count(0)) & " framing errors: " & str(framing_errors(0)));

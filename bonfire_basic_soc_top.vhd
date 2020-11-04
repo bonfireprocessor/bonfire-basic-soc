@@ -51,9 +51,21 @@ generic (
         flash_spi_mosi      : out   std_logic;
         flash_spi_miso      : in    std_logic;
          -- GPIO
-         gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
-         gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
-         gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0)
+        gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
+        gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
+        gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0);
+
+        -- External memory bus
+        wbm_cyc_o      : out std_logic;
+        wbm_stb_o      : out std_logic;
+        wbm_we_o       : out std_logic;
+        wbm_cti_o      : out std_logic_vector(2 downto 0);
+        wbm_bte_o      : out std_logic_vector(1 downto 0);  
+        wbm_sel_o      : out std_logic_vector(3 downto 0);
+        wbm_ack_i      : in  std_logic;
+        wbm_adr_o      : out std_logic_vector(25 downto 2);
+        wbm_dat_i      : in  std_logic_vector(31 downto 0);
+        wbm_dat_o      : out std_logic_vector(31 downto 0)
     );
 end bonfire_basic_soc_top;
 
@@ -182,16 +194,6 @@ signal bram_wrena_o   : STD_LOGIC_VECTOR (3 downto 0);
 signal bram_dbb_i     : std_logic_vector(31 downto 0);
 signal bram_adrb_o    : std_logic_vector(BRAM_ADR_WIDTH-1 downto 0);
 signal bram_enb_o     : STD_LOGIC;
-signal wbm_cyc_o      : std_logic;
-signal wbm_stb_o      : std_logic;
-signal wbm_we_o       : std_logic;
-signal wbm_cti_o      : std_logic_vector(2 downto 0);
-signal wbm_bte_o      : std_logic_vector(1 downto 0);
-signal wbm_sel_o      : std_logic_vector(3 downto 0);
-signal wbm_ack_i      : std_logic;
-signal wbm_adr_o      : std_logic_vector(25 downto 2);
-signal wbm_dat_i      : std_logic_vector(31 downto 0);
-signal wbm_dat_o      : std_logic_vector(31 downto 0);
 
 
 begin
