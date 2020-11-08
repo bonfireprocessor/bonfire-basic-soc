@@ -23,7 +23,8 @@ entity soc_ulx3s_top is
        BRANCH_PREDICTOR : boolean := true;
        USE_BONFIRE_CORE : boolean := false;
        BYPASS_CLOCKGEN  : boolean := false;
-       BurstSize : natural := 4;
+	   CacheSizeWords : natural := 16384 / 4; 
+       BurstSize : natural := 8;
        sdram_column_bits : natural :=9
      );
      port(
@@ -54,7 +55,11 @@ entity soc_ulx3s_top is
           sdram_ba       : out   STD_LOGIC_VECTOR( 1 downto 0);
           sdram_d        : inout STD_LOGIC_VECTOR(15 downto 0);
 
-          led : out std_logic_vector(7 downto 0)
+          led : out std_logic_vector(7 downto 0);
+		  -- I2C RTC 
+		  gpdi_sda : inout std_logic;
+		  gpdi_scl : inout std_logic
+		  
     );
 
 end entity;
@@ -123,6 +128,13 @@ architecture Behavioral of soc_ulx3s_top is
 	END COMPONENT;
 	attribute syn_noprune: boolean ;
 	attribute syn_noprune of USRMCLK: component is true;
+	
+	component gpio_pad is
+      Port ( i : in  STD_LOGIC;
+             o : out  STD_LOGIC;
+             t : in  STD_LOGIC;
+             io : inout  STD_LOGIC);
+   end component;
 
 
 signal reset,res1,res2  : std_logic;
@@ -132,9 +144,12 @@ signal clk : std_logic;
 signal flash_clk : std_logic;
 signal flash_csn_local : std_logic;
 
-signal gpio_o         : std_logic_vector(LED'range);
-signal gpio_i         : std_logic_vector(LED'range);
-signal gpio_t         : std_logic_vector(LED'range);
+
+constant gpio_len : natural := LED'length + 2;
+
+signal gpio_o         : std_logic_vector(gpio_len-1 downto 0);
+signal gpio_i         : std_logic_vector(gpio_len-1 downto 0);
+signal gpio_t         : std_logic_vector(gpio_len-1 downto 0);
 
 -- Common bus to DRAM controller
 signal mem_cyc,mem_stb,mem_we,mem_ack : std_logic;
@@ -169,7 +184,7 @@ begin
         DEVICE_FAMILY    => "ECP5",
         RamFileName      => RamFileName,
         mode             => "H",
-        BRAM_ADR_WIDTH   => 12,  
+        BRAM_ADR_WIDTH   => 13,  
         LANED_RAM        => true,
         Swapbytes        => false,
         ExtRAM           => true,
@@ -177,14 +192,13 @@ begin
         ENABLE_SPI       => true,
         USE_BONFIRE_CORE => false,
         BurstSize        => BurstSize,
-        -- CacheSizeWords   => CacheSizeWords,
+        CacheSizeWords   => CacheSizeWords,
         -- ENABLE_DCACHE    => ENABLE_DCACHE,
         -- DCacheSizeWords  => DCacheSizeWords,
         M_EXTENSION      => true,
         BRANCH_PREDICTOR => BRANCH_PREDICTOR,
         -- REG_RAM_STYLE    => REG_RAM_STYLE,
-        NUM_GPIO         => LED'length
-
+        NUM_GPIO         => gpio_len
       )
       port map (
         sysclk         => clk,
@@ -218,13 +232,32 @@ begin
     
       --LED(7) <= not resetn; -- to check polarity of reset button.
       LED(7 downto 0) <=  gpio_o(7 downto 0);
+      gpio_i(7 downto 0) <= gpio_o(7 downto 0);
+	  
+      scl : gpio_pad 
+        port map(
+          i => gpio_o(8),
+          o => gpio_i(8),
+          t => gpio_t(8),
+          io => gpdi_scl
 
+        );
+
+        sda : gpio_pad 
+        port map(
+          i => gpio_o(9),
+          o => gpio_i(9),
+          t => gpio_t(9),
+          io => gpdi_sda
+
+        );  
 
       DRAM: entity work.wbs_sdram_interface
       generic map (
         wbs_adr_high => mem_adr'high,
         wbs_burst_length => BurstSize,
-        sdram_column_bits => sdram_column_bits      
+        sdram_column_bits => sdram_column_bits,
+		sdram_address_width => 13 + 2 + 9 -- Row + Bank + Col - see datasheet		
       )
       PORT MAP(
             clk_i =>clk ,
