@@ -37,6 +37,7 @@ generic (
      REG_RAM_STYLE : string := "block";
 
      NUM_GPIO   : natural := 8;
+     NUM_SPI : natural := 1;
      DEVICE_FAMILY : string :=  ""
    );
    port(
@@ -78,11 +79,11 @@ generic (
         uart1_txd : out std_logic;
         uart1_rxd : in  std_logic;
 
-        -- SPI flash chip
-        flash_spi_cs        : out   std_logic;
-        flash_spi_clk       : out   std_logic;
-        flash_spi_mosi      : out   std_logic;
-        flash_spi_miso      : in    std_logic;
+        -- SPI 
+        spi_cs        : out   std_logic_vector(NUM_SPI-1 downto 0);
+        spi_clk       : out   std_logic_vector(NUM_SPI-1 downto 0);
+        spi_mosi      : out   std_logic_vector(NUM_SPI-1 downto 0);
+        spi_miso      : in    std_logic_vector(NUM_SPI-1 downto 0);
 
        -- GPIO
         gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
@@ -411,6 +412,7 @@ GENERIC MAP (
   ENABLE_UART0 => true,
   ENABLE_UART1 => ENABLE_UART1,
   ENABLE_SPI => ENABLE_SPI,
+  NUM_SPI => NUM_SPI,
   ENABLE_GPIO => ENABLE_GPIO
 )
 PORT MAP(
@@ -421,10 +423,10 @@ PORT MAP(
         gpio_o => gpio_o ,
         gpio_i => gpio_i,
         gpio_t =>  gpio_t,
-        flash_spi_cs => flash_spi_cs,
-        flash_spi_clk => flash_spi_clk,
-        flash_spi_mosi => flash_spi_mosi,
-        flash_spi_miso => flash_spi_miso,
+        spi_cs => spi_cs,
+        spi_clk => spi_clk,
+        spi_mosi => spi_mosi,
+        spi_miso => spi_miso,
         irq_o => irq_i,
         clk_i => clk,
         rst_i => reset,

@@ -23,7 +23,7 @@ entity soc_ulx3s_top is
        BRANCH_PREDICTOR : boolean := true;
        USE_BONFIRE_CORE : boolean := false;
        BYPASS_CLOCKGEN  : boolean := false;
-	   CacheSizeWords : natural := 16384 / 4; 
+	     CacheSizeWords : natural := 16384 / 4; 
        BurstSize : natural := 8;
        sdram_column_bits : natural :=9
      );
@@ -42,6 +42,19 @@ entity soc_ulx3s_top is
           flash_miso : in  std_logic;
           flash_holdn :  out std_logic;
           flash_wpn : out std_logic;
+
+          -- SD Card
+          sd_clk : out std_logic;
+          sd_mosi : out std_logic; -- sd_cmd
+          sd_miso : in std_logic; -- sd_d[0]
+          sd_cs : out std_logic; -- sd_d[3]
+
+          -- ADC (MAX11123)
+          adc_csn : out std_logic;
+          adc_mosi : out std_logic;
+          adc_miso : in std_logic;
+          adc_sclk : out std_logic;
+
 
             -- SDRAM signals
           sdram_clk      : out   STD_LOGIC;
@@ -66,7 +79,7 @@ end entity;
 
 architecture Behavioral of soc_ulx3s_top is
 
-
+constant num_spi : natural := 3;
 
   component bonfire_basic_soc_top
     generic (
@@ -78,6 +91,7 @@ architecture Behavioral of soc_ulx3s_top is
       ExtRAM           : boolean := false;
       ENABLE_UART1     : boolean := true;
       ENABLE_SPI       : boolean := true;
+      NUM_SPI : natural := 1; 
       USE_BONFIRE_CORE : boolean := true;
       BurstSize        : natural := 8;
       CacheSizeWords   : natural := 512;
@@ -96,10 +110,10 @@ architecture Behavioral of soc_ulx3s_top is
       uart0_rxd      : in  std_logic :='1';
       uart1_txd      : out std_logic;
       uart1_rxd      : in  std_logic :='1';
-      flash_spi_cs   : out std_logic;
-      flash_spi_clk  : out std_logic;
-      flash_spi_mosi : out std_logic;
-      flash_spi_miso : in  std_logic;
+      spi_cs        : out   std_logic_vector(NUM_SPI-1 downto 0);
+      spi_clk       : out   std_logic_vector(NUM_SPI-1 downto 0);
+      spi_mosi      : out   std_logic_vector(NUM_SPI-1 downto 0);
+      spi_miso      : in    std_logic_vector(NUM_SPI-1 downto 0);
       gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
       gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
       gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0);
@@ -141,8 +155,14 @@ signal reset,res1,res2  : std_logic;
 signal clk_locked : std_logic;
 signal clk : std_logic;
 
+-- SPI
+signal spi_cs   : std_logic_vector(NUM_SPI-1 downto 0);
+signal spi_clk  :  std_logic_vector(NUM_SPI-1 downto 0);
+signal spi_mosi :  std_logic_vector(NUM_SPI-1 downto 0);
+signal spi_miso :  std_logic_vector(NUM_SPI-1 downto 0);
+
 signal flash_clk : std_logic;
-signal flash_csn_local : std_logic;
+--signal flash_csn_local : std_logic;
 
 
 constant gpio_len : natural := LED'length + 2;
@@ -161,9 +181,28 @@ signal mem_cti : std_logic_vector(2 downto 0);
 
 begin
 
+  -- SPI(0)
   flash_holdn <= '1';
   flash_wpn <= '1';
-  flash_csn <= flash_csn_local;
+  flash_csn <= spi_cs(0);
+  flash_mosi <= spi_mosi(0);
+  spi_miso(0) <= flash_miso;
+   -- See Lattice TN1260 Figure 7: MCLK Connection 
+  u1: USRMCLK port map (
+		USRMCLKI => spi_clk(0),
+    USRMCLKTS => spi_cs(0)); -- CS active low will also disable Tristate status
+    
+  -- SPI(1)
+  sd_clk <= spi_clk(1);
+  sd_mosi <= spi_mosi(1);
+  sd_cs <= spi_cs(1);
+  spi_miso(1) <= sd_miso;
+
+  --SPI(2)
+  adc_csn <= spi_cs(2);
+  adc_mosi <= spi_mosi(2);
+  adc_sclk <= spi_clk(2);
+  spi_miso(2) <= adc_miso;
 
   cgen: case BYPASS_CLOCKGEN generate
     when FALSE =>
@@ -173,10 +212,7 @@ begin
       
   end generate;    
   
-  -- See Lattice TN1260 Figure 7: MCLK Connection 
-  u1: USRMCLK port map (
-		USRMCLKI => flash_clk,
-		USRMCLKTS => flash_csn_local); -- CS active low will also disable Tristate status
+ 
 
 
   bonfire_basic_soc_top_i :  bonfire_basic_soc_top
@@ -190,11 +226,12 @@ begin
         ExtRAM           => true,
         ENABLE_UART1     => false,
         ENABLE_SPI       => true,
+        NUM_SPI          => num_spi,
         USE_BONFIRE_CORE => false,
         BurstSize        => BurstSize,
         CacheSizeWords   => CacheSizeWords,
-        -- ENABLE_DCACHE    => ENABLE_DCACHE,
-        -- DCacheSizeWords  => DCacheSizeWords,
+        ENABLE_DCACHE    => true,
+        DCacheSizeWords  => 2048,
         M_EXTENSION      => true,
         BRANCH_PREDICTOR => BRANCH_PREDICTOR,
         -- REG_RAM_STYLE    => REG_RAM_STYLE,
@@ -207,10 +244,10 @@ begin
         uart0_rxd      => uart0_rxd,
         uart1_txd      => open,
         uart1_rxd      => '1',
-        flash_spi_cs   => flash_csn_local,
-        flash_spi_clk  => flash_clk,
-        flash_spi_mosi => flash_mosi,
-        flash_spi_miso => flash_miso,
+        spi_cs   => spi_cs, --(0 downto 0),
+        spi_clk  => spi_clk, --(0 downto 0),
+        spi_mosi => spi_mosi, --(0 downto 0),
+        spi_miso => spi_miso, --(0 downto 0),
 
         gpio_o => gpio_o,
         gpio_i => gpio_i,

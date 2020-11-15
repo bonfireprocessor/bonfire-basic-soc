@@ -24,7 +24,8 @@ generic (
      Swapbytes : boolean := true; -- SWAP Bytes in RAM word in low bRAMyte first order to use data2mem
      ExtRAM : boolean := false; 
      ENABLE_UART1    : boolean := true;
-     ENABLE_SPI      : boolean := true;   
+     ENABLE_SPI      : boolean := true;  
+     NUM_SPI : natural := 1; 
      BurstSize : natural := 8;
      CacheSizeWords : natural := 512; -- 2KB Instruction Cache
      ENABLE_DCACHE : boolean := false;
@@ -45,11 +46,11 @@ generic (
         -- UART1 signals:
         uart1_txd : out std_logic;
         uart1_rxd : in  std_logic :='1';
-        -- SPI flash chip
-        flash_spi_cs        : out   std_logic;
-        flash_spi_clk       : out   std_logic;
-        flash_spi_mosi      : out   std_logic;
-        flash_spi_miso      : in    std_logic;
+        -- SPI
+        spi_cs        : out   std_logic_vector(NUM_SPI-1 downto 0);
+        spi_clk       : out   std_logic_vector(NUM_SPI-1 downto 0);
+        spi_mosi      : out   std_logic_vector(NUM_SPI-1 downto 0);
+        spi_miso      : in    std_logic_vector(NUM_SPI-1 downto 0);
          -- GPIO
         gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
         gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
@@ -99,6 +100,7 @@ component bonfire_basic_soc is
     M_EXTENSION  : boolean := true;
     BRANCH_PREDICTOR : boolean := true;
     NUM_GPIO        : natural := 8;
+    NUM_SPI : natural := 1;
     DEVICE_FAMILY   : string
   );
   port (
@@ -126,10 +128,11 @@ component bonfire_basic_soc is
     uart0_rxd      : in  std_logic;
     uart1_txd : out std_logic;
     uart1_rxd      : in  std_logic;
-    flash_spi_cs   : out std_logic;
-    flash_spi_clk  : out std_logic;
-    flash_spi_mosi : out std_logic;
-    flash_spi_miso : in  std_logic;
+    spi_cs        : out   std_logic_vector(NUM_SPI-1 downto 0);
+    spi_clk       : out   std_logic_vector(NUM_SPI-1 downto 0);
+    spi_mosi      : out   std_logic_vector(NUM_SPI-1 downto 0);
+    spi_miso      : in    std_logic_vector(NUM_SPI-1 downto 0);
+
     gpio_o         : out std_logic_vector(NUM_GPIO-1 downto 0);
     gpio_i         : in  std_logic_vector(NUM_GPIO-1 downto 0);
     gpio_t         : out std_logic_vector(NUM_GPIO-1 downto 0)
@@ -147,6 +150,7 @@ generic (
   BRAM_ADR_WIDTH  : natural := 12;
   NUM_GPIO        : natural := 8;
   DCacheSizeWords : natural := 0;
+  NUM_SPI : natural := 1;
   DEVICE_FAMILY   : string
 );
 port (
@@ -174,10 +178,10 @@ port (
   uart0_rxd      : in  std_logic;
   uart1_txd      : out std_logic;
   uart1_rxd      : in  std_logic;
-  flash_spi_cs   : out std_logic;
-  flash_spi_clk  : out std_logic;
-  flash_spi_mosi : out std_logic;
-  flash_spi_miso : in  std_logic;
+  spi_cs        : out   std_logic_vector(NUM_SPI-1 downto 0);
+  spi_clk       : out   std_logic_vector(NUM_SPI-1 downto 0);
+  spi_mosi      : out   std_logic_vector(NUM_SPI-1 downto 0);
+  spi_miso      : in    std_logic_vector(NUM_SPI-1 downto 0);
   gpio_o         : out std_logic_vector(NUM_GPIO-1 downto 0);
   gpio_i         : in  std_logic_vector(NUM_GPIO-1 downto 0);
   gpio_t         : out std_logic_vector(NUM_GPIO-1 downto 0)
@@ -227,6 +231,7 @@ use_bonfire_cpu: if not USE_BONFIRE_CORE generate
      BRANCH_PREDICTOR => BRANCH_PREDICTOR,
      REG_RAM_STYLE   => REG_RAM_STYLE,
      NUM_GPIO        => NUM_GPIO,
+     NUM_SPI         => NUM_SPI, 
      DEVICE_FAMILY   => DEVICE_FAMILY,
      BRAM_ADR_BASE   =>  X"C0"
    )
@@ -255,10 +260,10 @@ use_bonfire_cpu: if not USE_BONFIRE_CORE generate
      uart0_rxd      => uart0_rxd,
      uart1_txd      => uart1_txd,
      uart1_rxd      => uart1_rxd,
-     flash_spi_cs   => flash_spi_cs,
-     flash_spi_clk  => flash_spi_clk,
-     flash_spi_mosi => flash_spi_mosi,
-     flash_spi_miso => flash_spi_miso,
+     spi_cs   => spi_cs,
+     spi_clk  => spi_clk,
+     spi_mosi => spi_mosi,
+     spi_miso => spi_miso,
      gpio_o         => gpio_o,
      gpio_i         => gpio_i,
      gpio_t         => gpio_t
@@ -275,6 +280,7 @@ g_use_bonfire_core: if USE_BONFIRE_CORE generate
      BRAM_ADR_WIDTH =>  BRAM_ADR_WIDTH,
 
      NUM_GPIO        => NUM_GPIO,
+     NUM_SPI         => NUM_SPI, 
      DEVICE_FAMILY   => DEVICE_FAMILY
    )
    port map (
@@ -302,10 +308,10 @@ g_use_bonfire_core: if USE_BONFIRE_CORE generate
      uart0_rxd      => uart0_rxd,
      uart1_txd      => uart1_txd,
      uart1_rxd      => uart1_rxd,
-     flash_spi_cs   => flash_spi_cs,
-     flash_spi_clk  => flash_spi_clk,
-     flash_spi_mosi => flash_spi_mosi,
-     flash_spi_miso => flash_spi_miso,
+     spi_cs   => spi_cs,
+     spi_clk  => spi_clk,
+     spi_mosi => spi_mosi,
+     spi_miso => spi_miso,
      gpio_o         => gpio_o,
      gpio_i         => gpio_i,
      gpio_t         => gpio_t

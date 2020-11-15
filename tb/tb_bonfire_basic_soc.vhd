@@ -40,6 +40,7 @@ generic(
          BRANCH_PREDICTOR : boolean := true;
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
+         NUM_SPI : natural := 1;
          DEVICE_FAMILY : string :=  "";
          UART_BAUDRATE : natural := 38400;
          CLK_FREQ_MHZ : natural := 12
@@ -79,10 +80,10 @@ architecture tb of tb_bonfire_basic_soc is
               uart0_rxd      : in std_logic;
               uart1_txd      : out std_logic;
               uart1_rxd      : in std_logic;
-              flash_spi_cs   : out std_logic;
-              flash_spi_clk  : out std_logic;
-              flash_spi_mosi : out std_logic;
-              flash_spi_miso : in std_logic;
+              spi_cs        : out   std_logic_vector(NUM_SPI-1 downto 0);
+              spi_clk       : out   std_logic_vector(NUM_SPI-1 downto 0);
+              spi_mosi      : out   std_logic_vector(NUM_SPI-1 downto 0);
+              spi_miso      : in    std_logic_vector(NUM_SPI-1 downto 0);
               gpio_o : out std_logic_vector(NUM_GPIO-1 downto 0);
               gpio_i : in  std_logic_vector(NUM_GPIO-1 downto 0);
               gpio_t : out std_logic_vector(NUM_GPIO-1 downto 0);
@@ -117,10 +118,10 @@ architecture tb of tb_bonfire_basic_soc is
     signal uart0_rxd      : std_logic :='1';
     signal uart1_txd      : std_logic;
     signal uart1_rxd      : std_logic := '1';
-    signal flash_spi_cs   : std_logic;
-    signal flash_spi_clk  : std_logic;
-    signal flash_spi_mosi : std_logic;
-    signal flash_spi_miso : std_logic;
+    signal spi_cs   : std_logic_vector(NUM_SPI-1 downto 0);
+    signal spi_clk  :  std_logic_vector(NUM_SPI-1 downto 0);
+    signal spi_mosi :  std_logic_vector(NUM_SPI-1 downto 0);
+    signal spi_miso :  std_logic_vector(NUM_SPI-1 downto 0);
 
     signal gpio_io           : std_logic_vector (num_gpio-1 downto 0);
 
@@ -190,10 +191,10 @@ begin
               uart0_rxd      => uart0_rxd,
               uart1_txd      => uart1_txd,
               uart1_rxd      => uart1_rxd,
-              flash_spi_cs   => flash_spi_cs,
-              flash_spi_clk  => flash_spi_clk,
-              flash_spi_mosi => flash_spi_mosi,
-              flash_spi_miso => flash_spi_miso,
+              spi_cs   => spi_cs,
+              spi_clk  => spi_clk,
+              spi_mosi => spi_mosi,
+              spi_miso => spi_miso,
               gpio_o => gpio_o,
               gpio_i => gpio_i,
               gpio_t => gpio_t,
@@ -261,8 +262,9 @@ begin
     sysclk <= TbClock;
 
     -- SPI Loopback
+    spi_miso <= spi_mosi;
 
-    flash_spi_miso <= flash_spi_mosi;
+
 
     stimuli : process
     begin
