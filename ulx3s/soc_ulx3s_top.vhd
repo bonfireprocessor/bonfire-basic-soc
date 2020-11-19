@@ -35,6 +35,13 @@ entity soc_ulx3s_top is
           uart0_txd : out std_logic;
           uart0_rxd : in  std_logic :='1';
 
+           -- UART1 signals:
+           uart1_txd : out std_logic;
+           uart1_rxd : in  std_logic :='1';
+           -- ESP32 Control
+           wifi_en : inout std_logic;
+           wifi_gpio0 : out std_logic;
+
           -- SPI NOR Flash
           flash_csn   : out std_logic;
           --flash_clk  : out std_logic;
@@ -46,8 +53,10 @@ entity soc_ulx3s_top is
           -- SD Card
           sd_clk : out std_logic;
           sd_mosi : out std_logic; -- sd_cmd
-          sd_miso : in std_logic; -- sd_d[0]
-          sd_cs : out std_logic; -- sd_d[3]
+          sd_miso : in std_logic; --  sd_d[0]
+          sd_cs : out std_logic; --   sd_d[3]
+          sd_d1 : out std_logic; --   sd_d[1] 
+          sd_d2 : inout std_logic;  --   sd_d[2] WiFi GPIO12 
 
           -- ADC (MAX11123)
           adc_csn : out std_logic;
@@ -68,7 +77,7 @@ entity soc_ulx3s_top is
           sdram_ba       : out   STD_LOGIC_VECTOR( 1 downto 0);
           sdram_d        : inout STD_LOGIC_VECTOR(15 downto 0);
 
-          led : out std_logic_vector(7 downto 0);
+          led : inout std_logic_vector(7 downto 0);
 		  -- I2C RTC 
 		  gpdi_sda : inout std_logic;
 		  gpdi_scl : inout std_logic
@@ -165,7 +174,7 @@ signal flash_clk : std_logic;
 --signal flash_csn_local : std_logic;
 
 
-constant gpio_len : natural := LED'length + 2;
+constant gpio_len : natural := LED'length + 4;
 
 signal gpio_o         : std_logic_vector(gpio_len-1 downto 0);
 signal gpio_i         : std_logic_vector(gpio_len-1 downto 0);
@@ -197,6 +206,9 @@ begin
   sd_mosi <= spi_mosi(1);
   sd_cs <= spi_cs(1);
   spi_miso(1) <= sd_miso;
+  sd_d1 <= '1'; -- hard coded high
+  wifi_gpio0 <= '1'; -- hard coded high, boot ESP32 from ESP
+
 
   --SPI(2)
   adc_csn <= spi_cs(2);
@@ -224,7 +236,7 @@ begin
         LANED_RAM        => true,
         Swapbytes        => false,
         ExtRAM           => true,
-        ENABLE_UART1     => false,
+        ENABLE_UART1     => true,
         ENABLE_SPI       => true,
         NUM_SPI          => num_spi,
         USE_BONFIRE_CORE => false,
@@ -242,8 +254,8 @@ begin
         I_RESET        => reset,
         uart0_txd      => uart0_txd,
         uart0_rxd      => uart0_rxd,
-        uart1_txd      => open,
-        uart1_rxd      => '1',
+        uart1_txd      => uart1_txd,
+        uart1_rxd      => uart1_rxd,
         spi_cs   => spi_cs, --(0 downto 0),
         spi_clk  => spi_clk, --(0 downto 0),
         spi_mosi => spi_mosi, --(0 downto 0),
@@ -268,9 +280,19 @@ begin
 
     
       --LED(7) <= not resetn; -- to check polarity of reset button.
-      LED(7 downto 0) <=  gpio_o(7 downto 0);
-      gpio_i(7 downto 0) <= gpio_o(7 downto 0);
-	  
+      -- LED(7 downto 0) <=  gpio_o(7 downto 0);
+      -- gpio_i(7 downto 0) <= gpio_o(7 downto 0);
+    
+      leds: for i in 0 to 7 generate
+          led_pad : gpio_pad 
+          port map(
+            i => gpio_o(i),
+            o => gpio_i(i),
+            t => gpio_t(i),
+            io => LED(i)
+          );
+      end generate;    
+
       scl : gpio_pad 
         port map(
           i => gpio_o(8),
@@ -288,6 +310,26 @@ begin
           io => gpdi_sda
 
         );  
+
+        sd2 : gpio_pad 
+        port map(
+          i => gpio_o(10),
+          o => gpio_i(10),
+          t => gpio_t(10),
+          io => sd_d2
+
+        );  
+
+        wei : gpio_pad 
+        port map(
+          i => gpio_o(11),
+          o => gpio_i(11),
+          t => gpio_t(11),
+          io => wifi_en
+
+        );  
+
+        
 
       DRAM: entity work.wbs_sdram_interface
       generic map (
