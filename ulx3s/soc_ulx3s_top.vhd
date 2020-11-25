@@ -23,12 +23,12 @@ entity soc_ulx3s_top is
        BRANCH_PREDICTOR : boolean := true;
        USE_BONFIRE_CORE : boolean := false;
        BYPASS_CLOCKGEN  : boolean := false;
-	     CacheSizeWords : natural := 16384 / 4; 
+       CacheSizeWords : natural := 16384 / 4;
        BurstSize : natural := 8;
        sdram_column_bits : natural :=9
      );
      port(
-          sysclk  : in  std_logic;       
+          sysclk  : in  std_logic;
           resetn : in std_logic;
 
           -- UART0 signals:
@@ -55,8 +55,8 @@ entity soc_ulx3s_top is
           sd_mosi : out std_logic; -- sd_cmd
           sd_miso : in std_logic; --  sd_d[0]
           sd_cs : out std_logic; --   sd_d[3]
-          sd_d1 : out std_logic; --   sd_d[1] 
-          sd_d2 : inout std_logic;  --   sd_d[2] WiFi GPIO12 
+          sd_d1 : out std_logic; --   sd_d[1]
+          sd_d2 : inout std_logic;  --   sd_d[2] WiFi GPIO12
 
           -- ADC (MAX11123)
           adc_csn : out std_logic;
@@ -78,10 +78,10 @@ entity soc_ulx3s_top is
           sdram_d        : inout STD_LOGIC_VECTOR(15 downto 0);
 
           led : inout std_logic_vector(7 downto 0);
-		  -- I2C RTC 
-		  gpdi_sda : inout std_logic;
-		  gpdi_scl : inout std_logic
-		  
+      -- I2C RTC
+      gpdi_sda : inout std_logic;
+      gpdi_scl : inout std_logic
+
     );
 
 end entity;
@@ -100,7 +100,7 @@ constant num_spi : natural := 3;
       ExtRAM           : boolean := false;
       ENABLE_UART1     : boolean := true;
       ENABLE_SPI       : boolean := true;
-      NUM_SPI : natural := 1; 
+      NUM_SPI : natural := 1;
       USE_BONFIRE_CORE : boolean := true;
       BurstSize        : natural := 8;
       CacheSizeWords   : natural := 512;
@@ -110,7 +110,7 @@ constant num_spi : natural := 3;
       BRANCH_PREDICTOR : boolean := true;
       REG_RAM_STYLE    : string := "block";
       NUM_GPIO         : natural := 8;
-      DEVICE_FAMILY    : string := ""    
+      DEVICE_FAMILY    : string := ""
     );
     port (
       sysclk         : in  std_logic;
@@ -138,21 +138,21 @@ constant num_spi : natural := 3;
       wbm_dat_o      : out std_logic_vector(31 downto 0)
     );
  end component bonfire_basic_soc_top;
- 
-	component clock_gen
-		port (CLKI: in  std_logic; CLKOP: out  std_logic);
-	end component;
 
-	COMPONENT USRMCLK
-	PORT(
-		USRMCLKI : IN STD_ULOGIC;
-		USRMCLKTS : IN STD_ULOGIC
-	);
-	END COMPONENT;
-	attribute syn_noprune: boolean ;
-	attribute syn_noprune of USRMCLK: component is true;
-	
-	component gpio_pad is
+  component clock_gen
+    port (CLKI: in  std_logic; CLKOP: out  std_logic);
+  end component;
+
+  COMPONENT USRMCLK
+  PORT(
+    USRMCLKI : IN STD_ULOGIC;
+    USRMCLKTS : IN STD_ULOGIC
+  );
+  END COMPONENT;
+  attribute syn_noprune: boolean ;
+  attribute syn_noprune of USRMCLK: component is true;
+
+  component gpio_pad is
       Port ( i : in  STD_LOGIC;
              o : out  STD_LOGIC;
              t : in  STD_LOGIC;
@@ -196,11 +196,11 @@ begin
   flash_csn <= spi_cs(0);
   flash_mosi <= spi_mosi(0);
   spi_miso(0) <= flash_miso;
-   -- See Lattice TN1260 Figure 7: MCLK Connection 
+   -- See Lattice TN1260 Figure 7: MCLK Connection
   u1: USRMCLK port map (
-		USRMCLKI => spi_clk(0),
+    USRMCLKI => spi_clk(0),
     USRMCLKTS => spi_cs(0)); -- CS active low will also disable Tristate status
-    
+
   -- SPI(1)
   sd_clk <= spi_clk(1);
   sd_mosi <= spi_mosi(1);
@@ -221,10 +221,10 @@ begin
       pll : clock_gen port map (CLKI=>sysclk, CLKOP=>clk);
     when TRUE =>
       clk <= sysclk;
-      
-  end generate;    
-  
- 
+
+  end generate;
+
+
 
 
   bonfire_basic_soc_top_i :  bonfire_basic_soc_top
@@ -232,7 +232,7 @@ begin
         DEVICE_FAMILY    => "ECP5",
         RamFileName      => RamFileName,
         mode             => "H",
-        BRAM_ADR_WIDTH   => 13,  
+        BRAM_ADR_WIDTH   => 13,
         LANED_RAM        => true,
         Swapbytes        => false,
         ExtRAM           => true,
@@ -278,22 +278,22 @@ begin
       );
 
 
-    
+
       --LED(7) <= not resetn; -- to check polarity of reset button.
       -- LED(7 downto 0) <=  gpio_o(7 downto 0);
       -- gpio_i(7 downto 0) <= gpio_o(7 downto 0);
-    
+
       leds: for i in 0 to 7 generate
-          led_pad : gpio_pad 
+          led_pad : gpio_pad
           port map(
             i => gpio_o(i),
             o => gpio_i(i),
             t => gpio_t(i),
             io => LED(i)
           );
-      end generate;    
+      end generate;
 
-      scl : gpio_pad 
+      scl : gpio_pad
         port map(
           i => gpio_o(8),
           o => gpio_i(8),
@@ -302,41 +302,41 @@ begin
 
         );
 
-        sda : gpio_pad 
+        sda : gpio_pad
         port map(
           i => gpio_o(9),
           o => gpio_i(9),
           t => gpio_t(9),
           io => gpdi_sda
 
-        );  
+        );
 
-        sd2 : gpio_pad 
+        sd2 : gpio_pad
         port map(
           i => gpio_o(10),
           o => gpio_i(10),
           t => gpio_t(10),
           io => sd_d2
 
-        );  
+        );
 
-        wei : gpio_pad 
+        wei : gpio_pad
         port map(
           i => gpio_o(11),
           o => gpio_i(11),
           t => gpio_t(11),
           io => wifi_en
 
-        );  
+        );
 
-        
+
 
       DRAM: entity work.wbs_sdram_interface
       generic map (
         wbs_adr_high => mem_adr'high,
         wbs_burst_length => BurstSize,
         sdram_column_bits => sdram_column_bits,
-		sdram_address_width => 13 + 2 + 9 -- Row + Bank + Col - see datasheet		
+        sdram_address_width => 13 + 2 + 9 -- Row + Bank + Col - see datasheet
       )
       PORT MAP(
             clk_i =>clk ,
@@ -351,7 +351,7 @@ begin
             wbs_dat_i =>  mem_dat_wr,
             wbs_dat_o =>  mem_dat_rd,
             wbs_cti_i =>  mem_cti,
-      
+
             SDRAM_CLK => sdram_clk,
             SDRAM_CKE => sdram_cke,
             SDRAM_CS => sdram_csn,
