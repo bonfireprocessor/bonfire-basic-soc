@@ -1,0 +1,65 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Wed Jan 11 01:13:53 2023
+[*]
+[dumpfile] "/home/thomas/development/fusesoc_build/vivado2021.2/bonfire-basic-soc_0/sim-ghdl/soc.ghw"
+[dumpfile_mtime] "Wed Jan 11 01:13:30 2023"
+[dumpfile_size] 13087019
+[savefile] "/home/thomas/development/bonfire/bonfire-basic-soc/test2023.gtkw"
+[timestart] 0
+[size] 1920 1031
+[pos] -1 -1
+*-37.339905 148615000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.tb_bonfire_basic_soc.
+[treeopen] top.tb_bonfire_basic_soc.capture_tx_0.
+[treeopen] top.tb_bonfire_basic_soc.dut.
+[treeopen] top.tb_bonfire_basic_soc.dut.ram_nl.
+[treeopen] top.tb_bonfire_basic_soc.dut.ram_nl.ram.
+[treeopen] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram.
+[treeopen] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.
+[treeopen] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.
+[treeopen] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.
+[treeopen] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.
+[treeopen] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.g_uart0.uart_0.
+[treeopen] top.tb_bonfire_basic_soc.gpio_pads[0].
+[sst_width] 415
+[signals_width] 322
+[sst_expanded] 1
+[sst_vpaned_height] 495
+@28
+top.tb_bonfire_basic_soc.dut.clk
+@29
+top.tb_bonfire_basic_soc.capture_tx_0.txd
+@22
+#{top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[31:0]} top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[31] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[30] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[29] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[28] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[27] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[26] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[25] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[24] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[23] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[22] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[21] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[20] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[19] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[18] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[17] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[16] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[15] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[14] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[13] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[12] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[11] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[10] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[9] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[8] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[7] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[6] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[5] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[4] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[3] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[2] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[1] top.tb_bonfire_basic_soc.dut.ram_nl.ram.dbout[0]
+@28
+top.tb_bonfire_basic_soc.dut.bram_ena_o
+@22
+#{top.tb_bonfire_basic_soc.dut.bram_adra_o[11:0]} top.tb_bonfire_basic_soc.dut.bram_adra_o[11] top.tb_bonfire_basic_soc.dut.bram_adra_o[10] top.tb_bonfire_basic_soc.dut.bram_adra_o[9] top.tb_bonfire_basic_soc.dut.bram_adra_o[8] top.tb_bonfire_basic_soc.dut.bram_adra_o[7] top.tb_bonfire_basic_soc.dut.bram_adra_o[6] top.tb_bonfire_basic_soc.dut.bram_adra_o[5] top.tb_bonfire_basic_soc.dut.bram_adra_o[4] top.tb_bonfire_basic_soc.dut.bram_adra_o[3] top.tb_bonfire_basic_soc.dut.bram_adra_o[2] top.tb_bonfire_basic_soc.dut.bram_adra_o[1] top.tb_bonfire_basic_soc.dut.bram_adra_o[0]
+@200
+-
+@28
+top.tb_bonfire_basic_soc.dut.bram_enb_o
+@22
+#{top.tb_bonfire_basic_soc.dut.bram_adrb_o[11:0]} top.tb_bonfire_basic_soc.dut.bram_adrb_o[11] top.tb_bonfire_basic_soc.dut.bram_adrb_o[10] top.tb_bonfire_basic_soc.dut.bram_adrb_o[9] top.tb_bonfire_basic_soc.dut.bram_adrb_o[8] top.tb_bonfire_basic_soc.dut.bram_adrb_o[7] top.tb_bonfire_basic_soc.dut.bram_adrb_o[6] top.tb_bonfire_basic_soc.dut.bram_adrb_o[5] top.tb_bonfire_basic_soc.dut.bram_adrb_o[4] top.tb_bonfire_basic_soc.dut.bram_adrb_o[3] top.tb_bonfire_basic_soc.dut.bram_adrb_o[2] top.tb_bonfire_basic_soc.dut.bram_adrb_o[1] top.tb_bonfire_basic_soc.dut.bram_adrb_o[0]
+#{top.tb_bonfire_basic_soc.dut.bram_dbb_i[31:0]} top.tb_bonfire_basic_soc.dut.bram_dbb_i[31] top.tb_bonfire_basic_soc.dut.bram_dbb_i[30] top.tb_bonfire_basic_soc.dut.bram_dbb_i[29] top.tb_bonfire_basic_soc.dut.bram_dbb_i[28] top.tb_bonfire_basic_soc.dut.bram_dbb_i[27] top.tb_bonfire_basic_soc.dut.bram_dbb_i[26] top.tb_bonfire_basic_soc.dut.bram_dbb_i[25] top.tb_bonfire_basic_soc.dut.bram_dbb_i[24] top.tb_bonfire_basic_soc.dut.bram_dbb_i[23] top.tb_bonfire_basic_soc.dut.bram_dbb_i[22] top.tb_bonfire_basic_soc.dut.bram_dbb_i[21] top.tb_bonfire_basic_soc.dut.bram_dbb_i[20] top.tb_bonfire_basic_soc.dut.bram_dbb_i[19] top.tb_bonfire_basic_soc.dut.bram_dbb_i[18] top.tb_bonfire_basic_soc.dut.bram_dbb_i[17] top.tb_bonfire_basic_soc.dut.bram_dbb_i[16] top.tb_bonfire_basic_soc.dut.bram_dbb_i[15] top.tb_bonfire_basic_soc.dut.bram_dbb_i[14] top.tb_bonfire_basic_soc.dut.bram_dbb_i[13] top.tb_bonfire_basic_soc.dut.bram_dbb_i[12] top.tb_bonfire_basic_soc.dut.bram_dbb_i[11] top.tb_bonfire_basic_soc.dut.bram_dbb_i[10] top.tb_bonfire_basic_soc.dut.bram_dbb_i[9] top.tb_bonfire_basic_soc.dut.bram_dbb_i[8] top.tb_bonfire_basic_soc.dut.bram_dbb_i[7] top.tb_bonfire_basic_soc.dut.bram_dbb_i[6] top.tb_bonfire_basic_soc.dut.bram_dbb_i[5] top.tb_bonfire_basic_soc.dut.bram_dbb_i[4] top.tb_bonfire_basic_soc.dut.bram_dbb_i[3] top.tb_bonfire_basic_soc.dut.bram_dbb_i[2] top.tb_bonfire_basic_soc.dut.bram_dbb_i[1] top.tb_bonfire_basic_soc.dut.bram_dbb_i[0]
+@28
+#{top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[7:0]} top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[7] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[6] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[5] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[4] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[3] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[2] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[1] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.gpio_o[0]
+top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.wb_stb_i
+top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.wb_cyc_i
+top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.inst_bonfire_soc_io.wb_ack_o
+@22
+#{top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][31:0]} top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][31] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][30] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][29] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][28] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][27] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][26] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][25] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][24] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][23] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][22] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][21] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][20] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][19] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][18] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][17] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][16] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][15] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][14] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][13] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][12] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][11] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][10] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][9] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][8] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][7] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][6] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][5] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][4] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][3] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][2] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][1] top.tb_bonfire_basic_soc.dut.ram_nl.ram.ram[742][0]
+@200
+-CPU DBUS
+@28
+top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_stb_o
+@22
+#{top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[31:2]} top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[31] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[30] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[29] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[28] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[27] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[26] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[25] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[24] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[23] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[22] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[21] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[20] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[19] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[18] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[17] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[16] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[15] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[14] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[13] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[12] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[11] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[10] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[9] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[8] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[7] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[6] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[5] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[4] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[3] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.cpu_inst.dbus_adr_o[2]
+@28
+top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_cs_db
+@22
+#{top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[7:0]} top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[7] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[6] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[5] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[4] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[3] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[2] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[1] top.tb_bonfire_basic_soc.dut.use_bonfire_cpu.bonfire_basic_soc_i.cpu_top.bram_adr_compare[0]
+[pattern_trace] 1
+[pattern_trace] 0

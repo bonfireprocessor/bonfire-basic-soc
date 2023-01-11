@@ -27,7 +27,7 @@ generic(
          RamFileName : string :="/home/thomas/development/bonfire/bonfire-software/monitor/BASIC_12_monitor.hex";
          BRAM_ADR_WIDTH : natural := 13;
          mode : string := "H";       -- only used when UseBRAMPrimitives is false
-         LANED_RAM : boolean := true; -- Implement RAM in Byte Lanes
+         LANED_RAM : boolean := false; -- Implement RAM in Byte Lanes
          ENABLE_UART1 : boolean := false;
          ENABLE_SPI   : boolean := true;
          Swapbytes : boolean := false; -- SWAP Bytes in RAM word in low byte first order to use data2mem
@@ -70,6 +70,7 @@ architecture tb of tb_bonfire_basic_soc is
          BRANCH_PREDICTOR : boolean := true;
          REG_RAM_STYLE : string := "block";
          NUM_GPIO   : natural := 8;
+         NUM_SPI : natural := 1;
          DEVICE_FAMILY : string :=  ""
 
        );
@@ -183,6 +184,7 @@ begin
          BRANCH_PREDICTOR=>BRANCH_PREDICTOR,
          REG_RAM_STYLE => REG_RAM_STYLE,
          NUM_GPIO  => NUM_GPIO,
+         NUM_SPI => NUM_SPI,
          DEVICE_FAMILY => DEVICE_FAMILY
     )
     port map (sysclk         => sysclk,
