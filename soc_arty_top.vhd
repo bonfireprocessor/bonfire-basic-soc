@@ -119,7 +119,7 @@ begin
         -- ExtRAM           => ExtRAM,
         ENABLE_UART1     => false,
         ENABLE_SPI       => false,
-        USE_BONFIRE_CORE => true,
+        USE_BONFIRE_CORE => false,
         -- BurstSize        => BurstSize,
         -- CacheSizeWords   => CacheSizeWords,
         -- ENABLE_DCACHE    => ENABLE_DCACHE,

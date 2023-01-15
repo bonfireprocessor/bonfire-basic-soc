@@ -42,10 +42,21 @@ filesets:
     file_type: xci
     files:
     - vivado/clkgen_arty.xci
+
   xdc:
     file_type: xdc
     files:
     - Arty.xdc
+
+  xdc_cmods7:
+    file_type: xdc
+    files:
+    - cmods7/cmod.xdc
+
+  cmods7_files:
+    file_type: vhdlSource-2008
+    files:
+      - cmods7/cmods7_top.vhd         
 
   ulx3s_files:
     file_type: vhdlSource-2008
@@ -131,7 +142,7 @@ targets:
     tools:
       ghdl:
         analyze_options: [--ieee=synopsys, -frelaxed-rules ]
-        run_options: [ --ieee-asserts=disable, --max-stack-alloc=0  --wave=soc.ghw, --stop-time=2000ns ] 
+        run_options: [ --ieee-asserts=disable, --max-stack-alloc=0 ] ## --wave=soc.ghw, --stop-time=3000000ns ]
       xsim:
         xelab_options: [ "--debug typical" ]
     toplevel: tb_bonfire_basic_soc
@@ -148,6 +159,20 @@ targets:
         part: xc7a35ticsg324-1L
     toplevel:
     - bonfire_basic_soc_top
+
+  synth-cmods7:
+    default_tool: vivado
+    parameters: [ BRAM_ADR_WIDTH, RamFileName, CLK_FREQ_MHZ, UART_BAUDRATE, USE_BONFIRE_CORE, M_EXTENSION, BRANCH_PREDICTOR, DEVICE_FAMILY  ]
+    filesets:
+    - gpio_xilinx
+    - rtl
+    - cmods7_files
+    - xdc_cmods7
+    tools:
+      vivado:
+        board_part: cmod-s7-25:part0:1.0
+    toplevel:
+    - cmod_s7_top   
 
   synth-ulx3s:
     default_tool: diamond

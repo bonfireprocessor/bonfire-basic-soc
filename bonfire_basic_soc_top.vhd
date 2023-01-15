@@ -16,7 +16,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity bonfire_basic_soc_top is
 generic (
-     USE_BONFIRE_CORE : boolean := true; -- Use bonfire-core instead of bonfire-cpu, experimental
+     USE_BONFIRE_CORE : boolean := false; -- Use bonfire-core instead of bonfire-cpu, experimental
      RamFileName : string:="";    -- :="compiled_code/monitor.hex";
      mode : string := "H";       -- only used when UseBRAMPrimitives is false
      BRAM_ADR_WIDTH : natural := 13;
