@@ -25,13 +25,21 @@ entity cmod_s7_top is
        Swapbytes : boolean := false -- SWAP Bytes in RAM word in low byte first order to use data2mem
   );
   port (
-  I_RESET   : in  std_logic;
-  CLK12MHZ  : in  std_logic;
+      I_RESET   : in  std_logic;
+      CLK12MHZ  : in  std_logic;
 
-  -- UART0 signals:
-  uart0_txd : out std_logic;
-  uart0_rxd : in  std_logic :='1';
-  led : inout std_logic_vector(3 downto 0)
+      -- UART0 signals:
+      uart0_txd : out std_logic;
+      uart0_rxd : in  std_logic :='1';
+      --LEDs
+      led : inout std_logic_vector(3 downto 0);
+      --QSPI FLASH
+      qspi_cs : out std_logic;
+      qspi_mosi : out std_logic;
+      qspi_miso : in std_logic;
+      --qspi_wpn  : out std_logic;
+      qspi_holdn : out std_logic;
+      qspi_sck : out std_logic
   );
 
 end entity;
@@ -91,14 +99,17 @@ architecture Behavioral of cmod_s7_top is
 
     end component;
 
--- component clkgen_arty
--- port (
---   clkout : out STD_LOGIC;
--- --  resetn  : in  STD_LOGIC;
---   locked : out STD_LOGIC;
---   sysclk : in  STD_LOGIC
--- );
--- end component clkgen_arty;
+
+  component clkgen
+  port
+   (
+    sysclk  : out std_logic;    
+    reset   : in  std_logic;
+    locked  : out    std_logic;
+    clk12mhz: in     std_logic
+   );
+  end component;
+
 
  component gpio_pad
  port (
@@ -121,6 +132,10 @@ signal gpio_t         : std_logic_vector(led'range);
 
 begin
 
+
+  qspi_holdn <= '1';
+  --qspi_wpn <= '1';
+
   bonfire_basic_soc_top_i :  bonfire_basic_soc_top
       generic map (
         RamFileName      => RamFileName,
@@ -130,7 +145,7 @@ begin
         Swapbytes        => Swapbytes,
         -- ExtRAM           => ExtRAM,
         ENABLE_UART1     => false,
-        ENABLE_SPI       => false,
+        ENABLE_SPI       => true,
         USE_BONFIRE_CORE => false,
         -- BurstSize        => BurstSize,
         -- CacheSizeWords   => CacheSizeWords,
@@ -139,7 +154,8 @@ begin
         -- M_EXTENSION      => M_EXTENSION,
         -- BRANCH_PREDICTOR => BRANCH_PREDICTOR,
         -- REG_RAM_STYLE    => REG_RAM_STYLE,
-        NUM_GPIO         => led'length
+        NUM_GPIO         => led'length,
+        NUM_SPI          => 1
 
       )
       port map (
@@ -150,10 +166,10 @@ begin
         uart1_txd      => open,
         uart1_rxd      => '1',
 
-        spi_cs(0)   => open,
-        spi_clk(0)  => open,
-        spi_mosi(0) => open,
-        spi_miso(0) => '0',
+        spi_cs(0)   => qspi_cs,
+        spi_clk(0)  => qspi_sck,
+        spi_mosi(0) => qspi_mosi,
+        spi_miso(0) => qspi_miso,
 
         gpio_o => gpio_o,
         gpio_i => gpio_i,
@@ -183,20 +199,19 @@ begin
         );
        end generate;
 
-      -- clkgen_inst: clkgen_arty
-      --   port map (
-      --   -- Clock out ports
-      --   clkout => sysclk,
-      --   -- Status and control signals
-      --   --resetn => I_RESET,
-      --   locked => clk_locked,
-      --   -- Clock in ports
-      --   sysclk => CLK100MHZ
-      -- );
+     
+    clkgen_inst : clkgen
+     port map ( 
+   
+       sysclk => sysclk,
+       reset => i_reset,
+       locked => clk_locked,   
+       clk12mhz => clk12mhz
+     );
 
-      sysclk <= CLK12MHZ;
+     --sysclk <= CLK12MHZ;
 
-      reset <= '0';   -- not clk_locked;
+      reset <=  not clk_locked;
 
 
 end architecture;

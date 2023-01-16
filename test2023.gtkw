@@ -1,13 +1,11 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Wed Jan 11 01:13:53 2023
+[*] Sun Jan 15 23:27:24 2023
 [*]
-[dumpfile] "/home/thomas/development/fusesoc_build/vivado2021.2/bonfire-basic-soc_0/sim-ghdl/soc.ghw"
-[dumpfile_mtime] "Wed Jan 11 01:13:30 2023"
-[dumpfile_size] 13087019
+[dumpfile] "(null)"
 [savefile] "/home/thomas/development/bonfire/bonfire-basic-soc/test2023.gtkw"
 [timestart] 0
-[size] 1920 1031
+[size] 1392 995
 [pos] -1 -1
 *-37.339905 148615000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top.
@@ -26,7 +24,7 @@
 [sst_width] 415
 [signals_width] 322
 [sst_expanded] 1
-[sst_vpaned_height] 495
+[sst_vpaned_height] 474
 @28
 top.tb_bonfire_basic_soc.dut.clk
 @29
